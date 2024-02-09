@@ -13,6 +13,7 @@ public:
 
   void receiveData(std::map<std::string, Player> &);
   void sendData();
+  void disconnect();
 
 private:
   sf::IpAddress serverIp;

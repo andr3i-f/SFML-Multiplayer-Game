@@ -24,6 +24,7 @@ public:
 
   void receiveData();
   void sendData(std::string &, sf::Packet &);
+  void sendInitialData(Connection &);
 
 private:
   sf::IpAddress serverIp;

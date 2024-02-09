@@ -33,7 +33,7 @@ void Server::receiveData() {
     packet >> header;
 
     switch (Settings::PacketTypes(header)) {
-      case Settings::NEW_CONNECTION: {
+      case Settings::PacketTypes::NEW_CONNECTION: {
         float x, y;
         unsigned short senderPort;
         packet >> senderPort >> x >> y;
@@ -44,30 +44,58 @@ void Server::receiveData() {
         c.x = x;
         c.y = y;
 
-        connections[c.address.toString() + std::to_string(senderPort)] = c;
+        std::string sender{c.address.toString() + std::to_string(senderPort)};
 
-        std::cout << "Made new connection with: " << senderIp << '-' << c.port << '\n';
+        sendInitialData(c);
+
+        connections[sender] = c;
+
+        sf::Packet toSend;
+        toSend << Settings::PacketTypes::NEW_CONNECTION << sender << x << y;
+
+        sendData(sender, toSend);
+
+        std::cout << "Made new connection with: " << senderIp << c.port << '\n';
         std::cout << "Total connections: " << connections.size() << '\n';
+
+
+
         break;
       }
-      case Settings::POSITION_CHANGE: {
+      case Settings::PacketTypes::POSITION_CHANGE: {
         float x, y;
         unsigned short senderPort;
 
         packet >> senderPort >> x >> y;
-        std::cout << senderPort << " | " << x << '-' << y << '\n';
-        std::string sender(std::string(senderIp.toString() + std::to_string(senderPort)));
 
-        connections[sender].x = x;
-        connections[sender].y = y;
+        std::string sender(senderIp.toString() + std::to_string(senderPort));
+        if (connections.contains(sender)) {
+          connections[sender].x = x;
+          connections[sender].y = y;
 
-        sf::Packet toSendPacket;
-        toSendPacket << Settings::POSITION_CHANGE << sender << x << y;
+          sf::Packet toSendPacket;
+          toSendPacket << Settings::PacketTypes::POSITION_CHANGE << sender << x << y;
 
-        sendData(sender, toSendPacket);
+          sendData(sender, toSendPacket);
+        }
+
         break;
       }
-      case Settings::DISCONNECT: {
+      case Settings::PacketTypes::DISCONNECT: {
+        std::cout << "Player disconnected\n";
+        unsigned short senderPort;
+
+        packet >> senderPort;
+
+        std::string sender(std::string(senderIp.toString() + std::to_string(senderPort)));
+        sf::Packet toSendPacket;
+        toSendPacket << Settings::DISCONNECT << sender;
+
+        sendData(sender, toSendPacket);
+
+        connections.erase(sender);
+        std::cout << "Total connections: " << connections.size() << '\n';
+
         break;
       }
       default:
@@ -85,5 +113,18 @@ void Server::sendData(std::string & sender, sf::Packet & p) {
 
       }
     }
+  }
+}
+
+void Server::sendInitialData(Connection & c) {
+  sf::Packet p;
+
+  for (const auto & [key, val] : connections) {
+    std::string otherConnection{val.address.toString() + std::to_string(val.port)};
+    p << Settings::PacketTypes::NEW_CONNECTION << otherConnection << val.x << val.y;
+    if (serverSocket.send(p, c.address, c.port) == sf::Socket::Done) {
+
+    }
+    p.clear();
   }
 }

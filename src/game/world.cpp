@@ -14,6 +14,7 @@ void World::run() {
   while (window.isOpen()) {
     processEvents();
     client->receiveData(others);
+    std::cout << "Other size: " << others.size()  << ' ' << t.asMilliseconds() << '\n';
 
     t += clock.restart();
     while (t > dt) {
@@ -39,6 +40,8 @@ void World::render() {
   // render objects here
   player->render(window);
 
+  //std::cout << others.size() << '\n' << " - " << '\n';
+
   for (auto & [key, value] : others) {
     value.render(window);
   }
@@ -50,6 +53,7 @@ void World::processEvents() {
   for (sf::Event event; window.pollEvent(event);) {
     if (event.type == sf::Event::Closed) {
       window.close();
+      client->disconnect();
     }
   }
 }

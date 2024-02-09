@@ -53,9 +53,30 @@ void Client::receiveData(std::map<std::string , Player> & others) {
         float x, y;
 
         p >> k >> x >> y;
-        others[k].player.setPosition(x, y);
-        std::cout << "Recieved player position: " << x << y << '\n';
+        if (others.contains(k)) {
+          others[k].player.setPosition(x, y);
+        }
+        //std::cout << "Recieved player position: " << x << y << '\n';
 
+        break;
+      }
+      case Settings::PacketTypes::DISCONNECT: {
+        std::string k;
+        p >> k;
+        std::cout << "Player: " << k << " disconnected.\n";
+
+        std::cout << "Printing playes before removing: \n";
+        for (const auto & [key, val] : others) {
+          std::cout << key << '\n';
+        }
+
+        others.erase(k);
+        std::cout << "Printing players after removing: \n";
+        for (const auto & [key, val] : others) {
+          std::cout << key << '\n';
+        }
+
+        //std::cout << others.size() << '\n';
         break;
       }
       default:
@@ -70,6 +91,17 @@ void Client::sendData() {
   std::string msg;
   sf::Packet p;
   p << Settings::PacketTypes::POSITION_CHANGE << port << player->player.getPosition().x << player->player.getPosition().y;
+
+  if (socket.send(p, serverIp, serverPort) == sf::Socket::Done) {
+
+  }
+}
+
+void Client::disconnect() {
+  sf::Packet p;
+  p << Settings::PacketTypes::DISCONNECT << port;
+
+  std::cout << port << '\n';
 
   if (socket.send(p, serverIp, serverPort) == sf::Socket::Done) {
 
