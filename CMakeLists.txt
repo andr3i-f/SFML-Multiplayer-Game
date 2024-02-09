@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(sfml_network_restructured)
+project(game)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -13,7 +13,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(SFML)
 
-add_executable(sfml_network_restructured main.cpp
+add_executable(game main.cpp
         src/server.cpp
         src/server.cpp
         src/server.h
@@ -25,4 +25,4 @@ add_executable(sfml_network_restructured main.cpp
         src/game/player.cpp
         src/game/player.h)
 
-target_link_libraries(sfml_network_restructured PRIVATE sfml-network sfml-graphics)
+target_link_libraries(game PRIVATE sfml-network sfml-graphics)
