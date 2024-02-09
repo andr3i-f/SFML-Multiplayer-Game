@@ -23,7 +23,6 @@ void World::run() {
       update(dt.asSeconds());
     }
 
-    client->sendData();
     render();
   }
 }
@@ -31,7 +30,7 @@ void World::run() {
 void World::update(float dt) {
   // update objects here
   player->update(dt, window);
-
+  client->sendData();
 }
 
 void World::render() {
