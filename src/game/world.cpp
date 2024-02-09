@@ -19,11 +19,12 @@ void World::run() {
     while (t > dt) {
       t -= dt;
       processEvents();
+      client->receiveData(others);
       update(dt.asSeconds());
     }
 
-    render();
     client->sendData();
+    render();
   }
 }
 
