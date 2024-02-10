@@ -59,7 +59,7 @@ void Player::update(float dt, sf::RenderWindow & w) {
       }
     }
 
-    std::cout << power << '\n';
+    //std::cout << power << '\n';
 
     this->calculationAngle = cannon.getRotation() - 270;
     if (this->calculationAngle == -270) {
@@ -68,7 +68,8 @@ void Player::update(float dt, sf::RenderWindow & w) {
     //std::cout << calculationAngle << '\n';
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-      if (this->canShoot && !playerHasShot) {
+      if (this->canShoot) {
+        this->canShoot = false;
         shoot();
       }
     }

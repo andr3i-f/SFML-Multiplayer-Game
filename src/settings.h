@@ -5,6 +5,7 @@ namespace Settings {
       NEW_CONNECTION = 1,
       ROTATION_CHANGE = 2,
       PLAYER_SHOOT = 3,
-      DISCONNECT = 4
+      PROJECTILE_RENDER = 4,
+      DISCONNECT = 5
   };
 }

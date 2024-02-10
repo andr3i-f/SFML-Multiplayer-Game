@@ -65,7 +65,7 @@ void World::render() {
   //std::cout << others.size() << '\n' << " - " << '\n';
   window.draw(powerText);
 
-  if (player->canShoot && !player->playerHasShot) {
+  if (player->canShoot) {
     window.draw(ableToShoot);
   }
 

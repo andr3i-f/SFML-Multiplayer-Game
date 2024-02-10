@@ -7,6 +7,8 @@ Client::Client(Player *& player) {
   std::cout << "Enter port for you to bind to: ";
   std::cin >> port;
 
+  this->address = sf::IpAddress::getLocalAddress();
+
   std::cout << "\n-------------------------------------\n";
 
   std::cout << "Enter server port: ";
@@ -74,11 +76,20 @@ void Client::receiveData(std::map<std::string , Player> & others, std::vector<Pr
       }
       case Settings::PacketTypes::PLAYER_SHOOT: {
         std::string k;
+        p >> k >> player->canShoot;
+        if (player->canShoot) {
+          std::cout << "YOU CAN SHOOT NOW\n";
+        }
+        break;
+      }
+      case Settings::PacketTypes::PROJECTILE_RENDER: {
+        std::string k;
         float x, y, angleInRad, initialVelocity;
 
-        p >> k >> x >> y >> angleInRad >> initialVelocity >> player->canShoot;
+        p >> k >> x >> y >> angleInRad >> initialVelocity;
 
         projectiles.push_back(Projectile{ x, y, angleInRad, initialVelocity });
+        break;
       }
       case Settings::PacketTypes::DISCONNECT: {
         std::string k;
@@ -106,16 +117,16 @@ void Client::receiveData(std::map<std::string , Player> & others, std::vector<Pr
 
   p.clear();
 
-  if (player->canShoot && player->playerHasShot) {
-    shoot(player->endOfCannonX, player->endOfCannonY, player->angleInRad, player->initialVelocity);
+  if (!player->canShoot && player->playerHasShot) {
+    shoot(player->endOfCannonX, player->endOfCannonY, player->angleInRad, player->power);
   }
 }
 
 void Client::shoot(float & x, float & y, float & angleInRad, float & initalVelocity) {
-  player->canShoot = false;
   player->playerHasShot = false;
   sf::Packet p;
   std::string sender{address.toString() + std::to_string(port)};
+  std::cout << sender << '\n';
   p << Settings::PacketTypes::PLAYER_SHOOT << sender << x << y << angleInRad << initalVelocity;
 
   if (socket.send(p, serverIp, serverPort) == sf::Socket::Done) {

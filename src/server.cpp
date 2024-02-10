@@ -149,10 +149,16 @@ void Server::receiveData() {
         bool canShoot = true;
 
         packet >> sender >> x >> y >> angleInRad >> initalVelocity;
+        std::cout << sender << " has shot.\n";
         packet.clear();
 
-        packet << Settings::PacketTypes::PLAYER_SHOOT << sender << x << y << angleInRad << initalVelocity << canShoot;
+        packet << Settings::PacketTypes::PROJECTILE_RENDER << sender << x << y << angleInRad << initalVelocity;
+        sendDataToEveryone(packet);
+
+        packet.clear();
+        packet << Settings::PacketTypes::PLAYER_SHOOT << sender << canShoot;
         sendData(sender, packet);
+        break;
       }
       case Settings::PacketTypes::DISCONNECT: {
         std::cout << "Player disconnected\n";
@@ -185,6 +191,14 @@ void Server::sendData(std::string & sender, sf::Packet & p) {
       if (serverSocket.send(p, val.address, val.port) == sf::Socket::Done) {
 
       }
+    }
+  }
+}
+
+void Server::sendDataToEveryone(sf::Packet & p) {
+  for (const auto & [key, val] : connections) {
+    if (serverSocket.send(p, val.address, val.port) == sf::Socket::Done) {
+
     }
   }
 }
