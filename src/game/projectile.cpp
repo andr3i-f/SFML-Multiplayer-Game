@@ -1,10 +1,11 @@
 #include "projectile.h"
 
-Projectile::Projectile(sf::Vector2f & initialPosition, float angleInRad, float initialVelocity) {
+Projectile::Projectile(float x, float y, float angleInRad, float initialVelocity) {
   projectile.setRadius(6.f);
   projectile.setOrigin(projectile.getRadius() / 2, projectile.getRadius() / 2);
 
-  this->position = initialPosition;
+  this->position.x = x;
+  this->position.y = y;
 
   //std::cout << angle << '\n';
   this->angle = angleInRad;

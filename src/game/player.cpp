@@ -54,30 +54,27 @@ void Player::update(float dt, sf::RenderWindow & w) {
     //std::cout << calculationAngle << '\n';
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-      shoot();
+      if (this->canShoot && !playerHasShot) {
+        shoot();
+      }
     }
-  }
-  for (Projectile & p : projectiles) {
-    p.update(dt);
   }
 }
 
 void Player::render(sf::RenderWindow & w) {
   w.draw(body);
   w.draw(cannon);
-
-  for (Projectile & p : projectiles) {
-    p.render(w);
-  }
 }
 
 void Player::shoot() {
-  float angleInRad = static_cast<float>(calculationAngle * PI / 180);
+  angleInRad = static_cast<float>(calculationAngle * PI / 180);
   //std::cout << angleInRad << '\n';
-  float endOfCannonX{ cannon.getPosition().x + cannon.getSize().x * std::sin(angleInRad) };
-  float endOfCannonY{ cannon.getPosition().y - cannon.getSize().x * std::cos(angleInRad) };
-  sf::Vector2f endOfCannonPosition{ endOfCannonX, endOfCannonY };
-  float initialVelocity{ 15.f };
+  endOfCannonX = cannon.getPosition().x + cannon.getSize().x * std::sin(angleInRad);
+  endOfCannonY = cannon.getPosition().y - cannon.getSize().x * std::cos(angleInRad);
 
-  projectiles.push_back(Projectile{endOfCannonPosition, angleInRad, initialVelocity});
+
+  // call client method to shoot
+  playerHasShot = true;
+
+  //projectiles.push_back(Projectile{endOfCannonPosition, angleInRad, initialVelocity});
 }

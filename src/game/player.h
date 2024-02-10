@@ -25,8 +25,16 @@ public:
   float upperBoundAngle;
   float lowerBoundAngle;
 
+  bool canShoot = false;
+  bool playerHasShot = false;
+
   int playerNumber;
   sf::Vector2f position;
+
+  float angleInRad;
+  float endOfCannonX;
+  float endOfCannonY;
+  float initialVelocity{ 15.f };
 
   std::vector<Projectile> projectiles;
 };

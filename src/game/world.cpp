@@ -2,6 +2,17 @@
 
 World::World(Client *& c, Player *& p) {
   window.setVerticalSyncEnabled(true);
+
+  if (!font.loadFromFile("assets/fonts/arial.ttf")) {
+    std::cout << "Could not load font\n";
+  }
+
+  ableToShoot.setFont(font);
+  ableToShoot.setCharacterSize(20);
+  ableToShoot.setStyle(sf::Text::Bold);
+  ableToShoot.setString("YOUR TURN TO SHOOT");
+  ableToShoot.setPosition(sf::Vector2f{50, 50});
+
   client = c;
   player = p;
 }
@@ -13,14 +24,14 @@ void World::run() {
 
   while (window.isOpen()) {
     processEvents();
-    client->receiveData(others);
+    client->receiveData(others, projectiles);
     //std::cout << "Other size: " << others.size()  << ' ' << t.asMilliseconds() << '\n';
 
     t += clock.restart();
     while (t > dt) {
       t -= dt;
       processEvents();
-      client->receiveData(others);
+      client->receiveData(others, projectiles);
       update(dt.asSeconds());
     }
 
@@ -32,6 +43,10 @@ void World::update(float dt) {
   // update objects here
   player->update(dt, window);
   client->sendData();
+
+  for (Projectile & p : projectiles) {
+    p.update(dt);
+  }
 }
 
 void World::render() {
@@ -42,8 +57,16 @@ void World::render() {
 
   //std::cout << others.size() << '\n' << " - " << '\n';
 
+  if (player->canShoot && !player->playerHasShot) {
+    window.draw(ableToShoot);
+  }
+
   for (auto & [key, value] : others) {
     value.render(window);
+  }
+
+  for (Projectile & p : projectiles) {
+    p.render(window);
   }
 
   window.display();

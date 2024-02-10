@@ -32,7 +32,7 @@ Client::Client(Player *& player) {
 
   }
 
-  p >> player->playerNumber >> player->position.x >> player->position.y >> player->initialAngle >> player->lowerBoundAngle >> player->upperBoundAngle;
+  p >> player->playerNumber >> player->position.x >> player->position.y >> player->initialAngle >> player->lowerBoundAngle >> player->upperBoundAngle >> player->canShoot;
   std::cout << player->playerNumber << ' ' << player->position.x << ' ' << player->position.y << '\n';
   player->cannon.setRotation(player->initialAngle);
   player->body.setPosition(player->position.x, player->position.y);
@@ -42,7 +42,7 @@ Client::Client(Player *& player) {
   p.clear();
 }
 
-void Client::receiveData(std::map<std::string , Player> & others) {
+void Client::receiveData(std::map<std::string , Player> & others, std::vector<Projectile> & projectiles) {
   sf::Packet p;
   sf::IpAddress sIp;
   unsigned short sP;
@@ -72,6 +72,14 @@ void Client::receiveData(std::map<std::string , Player> & others) {
 
         break;
       }
+      case Settings::PacketTypes::PLAYER_SHOOT: {
+        std::string k;
+        float x, y, angleInRad, initialVelocity;
+
+        p >> k >> x >> y >> angleInRad >> initialVelocity >> player->canShoot;
+
+        projectiles.push_back(Projectile{ x, y, angleInRad, initialVelocity });
+      }
       case Settings::PacketTypes::DISCONNECT: {
         std::string k;
         p >> k;
@@ -97,6 +105,22 @@ void Client::receiveData(std::map<std::string , Player> & others) {
   }
 
   p.clear();
+
+  if (player->canShoot && player->playerHasShot) {
+    shoot(player->endOfCannonX, player->endOfCannonY, player->angleInRad, player->initialVelocity);
+  }
+}
+
+void Client::shoot(float & x, float & y, float & angleInRad, float & initalVelocity) {
+  player->canShoot = false;
+  player->playerHasShot = false;
+  sf::Packet p;
+  std::string sender{address.toString() + std::to_string(port)};
+  p << Settings::PacketTypes::PLAYER_SHOOT << sender << x << y << angleInRad << initalVelocity;
+
+  if (socket.send(p, serverIp, serverPort) == sf::Socket::Done) {
+
+  }
 }
 
 void Client::sendData() {

@@ -65,7 +65,7 @@ void Server::receiveData() {
 
             packet << playerOneNumber << playerOnePositionX <<
               playerOnePositionY << playerOneInitialAngle <<
-              playerOneLowerBoundAngle << playerOneUpperBoundAngle;
+              playerOneLowerBoundAngle << playerOneUpperBoundAngle << c.canShoot;
 
             if (serverSocket.send(packet, senderIp, senderPort) == sf::Socket::Done) {
               std::cout << "Sent player 1 initial data.\n";
@@ -99,7 +99,7 @@ void Server::receiveData() {
 
             packet << playerTwoNumber << playerTwoPositionX <<
                    playerTwoPositionY << playerTwoInitialAngle <<
-                   playerTwoLowerBoundAngle << playerTwoUpperBoundAngle;
+                   playerTwoLowerBoundAngle << playerTwoUpperBoundAngle << c.canShoot;
 
             std::cout << playerTwoNumber << ' ' << playerTwoPositionX << ' ' << playerTwoPositionY << '\n';
 
@@ -142,6 +142,17 @@ void Server::receiveData() {
         }
 
         break;
+      }
+      case Settings::PacketTypes::PLAYER_SHOOT: {
+        std::string sender;
+        float x, y, angleInRad, initalVelocity;
+        bool canShoot = true;
+
+        packet >> sender >> x >> y >> angleInRad >> initalVelocity;
+        packet.clear();
+
+        packet << Settings::PacketTypes::PLAYER_SHOOT << sender << x << y << angleInRad << initalVelocity << canShoot;
+        sendData(sender, packet);
       }
       case Settings::PacketTypes::DISCONNECT: {
         std::cout << "Player disconnected\n";

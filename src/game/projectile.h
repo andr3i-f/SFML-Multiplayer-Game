@@ -8,7 +8,7 @@
 
 class Projectile {
 public:
-  Projectile(sf::Vector2f &, float, float);
+  Projectile(float, float, float, float);
 
   void render(sf::RenderWindow &);
   void update(float);
