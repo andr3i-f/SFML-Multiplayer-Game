@@ -46,6 +46,20 @@ void Player::update(float dt, sf::RenderWindow & w) {
       }
       //std::cout << "angle: " << cannon.getRotation() << '\n';
     }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+      power += 1;
+      if (power > 100) {
+        power = 100;
+      }
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+      power -= 1;
+      if (power < 0) {
+        power = 0;
+      }
+    }
+
+    std::cout << power << '\n';
 
     this->calculationAngle = cannon.getRotation() - 270;
     if (this->calculationAngle == -270) {

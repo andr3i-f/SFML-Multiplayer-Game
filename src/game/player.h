@@ -36,5 +36,7 @@ public:
   float endOfCannonY;
   float initialVelocity{ 15.f };
 
+  float power{ 0.f };
+
   std::vector<Projectile> projectiles;
 };

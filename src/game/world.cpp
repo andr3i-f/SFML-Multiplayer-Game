@@ -13,6 +13,13 @@ World::World(Client *& c, Player *& p) {
   ableToShoot.setString("YOUR TURN TO SHOOT");
   ableToShoot.setPosition(sf::Vector2f{50, 50});
 
+  powerText.setFont(font);
+  powerText.setCharacterSize(20);
+  powerText.setStyle(sf::Text::Bold);
+  //ss << player->power;
+  powerText.setString(std::string("POWER: "));
+  powerText.setPosition(sf::Vector2f{ 900, 50 });
+
   client = c;
   player = p;
 }
@@ -56,6 +63,7 @@ void World::render() {
   player->render(window);
 
   //std::cout << others.size() << '\n' << " - " << '\n';
+  window.draw(powerText);
 
   if (player->canShoot && !player->playerHasShot) {
     window.draw(ableToShoot);
