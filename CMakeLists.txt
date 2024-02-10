@@ -23,7 +23,9 @@ add_executable(game main.cpp
         src/game/world.cpp
         src/game/world.h
         src/game/player.cpp
-        src/game/player.h)
+        src/game/player.h
+        src/game/projectile.cpp
+        src/game/projectile.h)
 
 target_link_libraries(game PRIVATE sfml-network sfml-graphics)
 

@@ -14,7 +14,7 @@ void World::run() {
   while (window.isOpen()) {
     processEvents();
     client->receiveData(others);
-    std::cout << "Other size: " << others.size()  << ' ' << t.asMilliseconds() << '\n';
+    //std::cout << "Other size: " << others.size()  << ' ' << t.asMilliseconds() << '\n';
 
     t += clock.restart();
     while (t > dt) {
