@@ -31,7 +31,3 @@ void Projectile::update(float dt) {
 
   projectile.setPosition(position);
 }
-
-void Projectile::checkCollision() {
- // no thanks
-}

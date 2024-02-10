@@ -16,6 +16,8 @@ public:
   void update(float dt);
   void render();
   void processEvents();
+  void checkCollision();
+  void deleteProjectiles();
 
 private:
   sf::RenderWindow window{ sf::VideoMode(1200, 800), "Game" };

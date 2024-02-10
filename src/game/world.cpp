@@ -61,6 +61,9 @@ void World::update(float dt) {
 
   playerPowerIndicator.setSize(sf::Vector2f {player->power, 20});
 
+  deleteProjectiles();
+  checkCollision();
+
   for (Projectile & p : projectiles) {
     p.update(dt);
   }
@@ -97,6 +100,24 @@ void World::processEvents() {
     if (event.type == sf::Event::Closed) {
       window.close();
       client->disconnect();
+    }
+  }
+}
+
+void World::checkCollision() {
+  for (Projectile & p : projectiles) {
+    if (p.projectile.getGlobalBounds().intersects(player->body.getGlobalBounds())) {
+      window.close();
+      client->disconnect();
+    }
+  }
+}
+
+void World::deleteProjectiles() {
+  for (int x{}; x < projectiles.size(); x++) {
+    if (projectiles[x].position.y > 850) {
+      projectiles.erase(projectiles.begin() + x);
+      std::cout << "Deleted projectile\n";
     }
   }
 }

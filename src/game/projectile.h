@@ -12,9 +12,8 @@ public:
 
   void render(sf::RenderWindow &);
   void update(float);
-  void checkCollision();
 
-private:
+public:
   sf::CircleShape projectile;
   float angle;
   float gravity;
