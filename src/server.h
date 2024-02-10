@@ -14,6 +14,8 @@ struct Connection {
   // player positions
   float x;
   float y;
+  int playerNumber;
+  bool canShoot;
 };
 
 class Server {

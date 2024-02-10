@@ -2,7 +2,6 @@
 
 Client::Client(Player *& player) {
   this->player = player;
-  socket.setBlocking(false);
 
   std::string serverAddress;
   std::cout << "Enter port for you to bind to: ";
@@ -26,7 +25,21 @@ Client::Client(Player *& player) {
   if (socket.send(p, serverIp, serverPort) != sf::Socket::Done) {
     std::cout << "Client unable to send initial connection to server." << std::endl;
   }
-  p.clear();  void update();
+
+  p.clear();
+
+  if (socket.receive(p, serverIp, serverPort) != sf::Socket::Done) {
+
+  }
+
+  p >> player->playerNumber >> player->position.x >> player->position.y >> player->initialAngle >> player->lowerBoundAngle >> player->upperBoundAngle;
+
+  player->cannon.setRotation(player->initialAngle);
+  player->body.setPosition(player->position.x, player->position.y);
+  player->cannon.setPosition(player->position.x, player->position.y);
+
+  socket.setBlocking(false);
+  p.clear();
 }
 
 void Client::receiveData(std::map<std::string , Player> & others) {

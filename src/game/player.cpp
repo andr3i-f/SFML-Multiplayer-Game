@@ -12,7 +12,7 @@ Player::Player() {
   body.setOrigin(body.getSize().x / 2, body.getSize().y / 2);
   cannon.setOrigin(cannon.getSize().x - cannon.getSize().x, cannon.getSize().y / 2);
 
-  body.setPosition(100.f, 100.f);
+  body.setPosition(100.f, 800.f - (body.getSize().y / 2));
   cannon.setPosition(body.getPosition());
 
   body.setFillColor(sf::Color::Blue);
@@ -30,18 +30,24 @@ void Player::update(float dt, sf::RenderWindow & w) {
   if (w.hasFocus()) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
       cannon.rotate(-0.25);
-      //std::cout << "angle: " << cannon.getRotation() - 270  << '\n';
+      if (cannon.getRotation() <= lowerBoundAngle) {
+        cannon.setRotation(lowerBoundAngle);
+      }
+      std::cout << "angle: " << cannon.getRotation()  << '\n';
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
       cannon.rotate(0.25);
-      //std::cout << "angle: " << cannon.getRotation() - 270<< '\n';
+      if (cannon.getRotation() >= upperBoundAngle) {
+        cannon.setRotation(upperBoundAngle);
+      }
+      std::cout << "angle: " << cannon.getRotation() << '\n';
     }
 
     this->calculationAngle = cannon.getRotation() - 270;
     if (this->calculationAngle == -270) {
       this->calculationAngle = 90;
     }
-    std::cout << calculationAngle << '\n';
+    //std::cout << calculationAngle << '\n';
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
       shoot();

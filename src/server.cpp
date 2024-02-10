@@ -34,30 +34,75 @@ void Server::receiveData() {
 
     switch (Settings::PacketTypes(header)) {
       case Settings::PacketTypes::NEW_CONNECTION: {
-        float x, y;
-        unsigned short senderPort;
-        packet >> senderPort >> x >> y;
 
-        Connection c;
-        c.address = senderIp;
-        c.port = senderPort;
-        c.x = x;
-        c.y = y;
+        if (connections.size() == 2) {
+          std::cout << "Player tried connecting - game lobby is full.\n";
+        } else {
+          if (connections.empty()) {
+            std::cout << "Player 1 Connecting\n";
 
-        std::string sender{c.address.toString() + std::to_string(senderPort)};
+            int playerOneNumber{ 1 };
+            float playerOnePositionX{ 100 };
+            float playerOnePositionY{ 790 };
+            float playerOneInitialAngle{ 315 };
+            float playerOneLowerBoundAngle{ 270 };
+            float playerOneUpperBoundAngle{ 358 };
+            unsigned short senderPort;
 
-        sendInitialData(c);
+            packet >> senderPort;
 
-        connections[sender] = c;
+            Connection c;
+            c.address = senderIp;
+            c.port = senderPort;
 
-        sf::Packet toSend;
-        toSend << Settings::PacketTypes::NEW_CONNECTION << sender << x << y;
+            connections[senderIp.toString() + std::to_string(senderPort)] = c;
 
-        sendData(sender, toSend);
+            packet.clear();
 
-        std::cout << "Made new connection with: " << senderIp << c.port << '\n';
-        std::cout << "Total connections: " << connections.size() << '\n';
+            packet << playerOneNumber << playerOnePositionX <<
+              playerOnePositionY << playerOneInitialAngle <<
+              playerOneLowerBoundAngle << playerOneUpperBoundAngle;
 
+            if (serverSocket.send(packet, senderIp, senderPort) == sf::Socket::Done) {
+              std::cout << "Sent player 1 initial data.\n";
+            }
+
+            std::cout << "Made new connection with: " << senderIp << c.port << '\n';
+            std::cout << "Total connections: " << connections.size() << '\n';
+
+          } else {
+            std::cout << "Player 2 Connecting\n";
+
+            int playerTwoNumber{ 2 };
+            float playerTwoPositionX{ 1100 };
+            float playerTwoPositionY{ 790 };
+            float playerTwoInitialAngle{ 225 };
+            float playerTwoLowerBoundAngle{ 178 };
+            float playerTwoUpperBoundAngle{ 270 };
+            unsigned short senderPort;
+
+            packet >> senderPort;
+
+            Connection c;
+            c.address = senderIp;
+            c.port = senderPort;
+
+            connections[senderIp.toString() + std::to_string(senderPort)] = c;
+
+            packet.clear();
+
+            packet << playerTwoNumber << playerTwoPositionX <<
+              playerTwoPositionY << playerTwoInitialAngle <<
+              playerTwoLowerBoundAngle << playerTwoUpperBoundAngle;
+
+            if (serverSocket.send(packet, senderIp, senderPort) == sf::Socket::Done) {
+              std::cout << "Sent player 2 initial data.\n";
+            }
+
+            std::cout << "Made new connection with: " << senderIp << c.port << '\n';
+            std::cout << "Total connections: " << connections.size() << '\n';
+          }
+        }
 
 
         break;

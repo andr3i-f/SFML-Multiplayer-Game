@@ -17,7 +17,7 @@ public:
   void processEvents();
 
 private:
-  sf::RenderWindow window{ sf::VideoMode(800, 800), "Game" };
+  sf::RenderWindow window{ sf::VideoMode(1200, 800), "Game" };
 
   Client * client;
   Player * player;

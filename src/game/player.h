@@ -23,6 +23,12 @@ public:
   sf::RectangleShape cannon;
 
   float calculationAngle;
+  float initialAngle;
+  float upperBoundAngle;
+  float lowerBoundAngle;
+
+  int playerNumber;
+  sf::Vector2f position;
 
   std::vector<Projectile> projectiles;
 };
