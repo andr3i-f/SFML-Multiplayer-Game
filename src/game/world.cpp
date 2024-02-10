@@ -20,6 +20,14 @@ World::World(Client *& c, Player *& p) {
   powerText.setString(std::string("POWER: "));
   powerText.setPosition(sf::Vector2f{ 900, 50 });
 
+  playerPowerBackGround.setSize(sf::Vector2f{100, 20});
+  playerPowerBackGround.setPosition(sf::Vector2f {900, 75});
+  playerPowerBackGround.setFillColor(sf::Color::Red);
+
+  playerPowerIndicator.setSize(sf::Vector2f{0, 20});
+  playerPowerIndicator.setPosition(playerPowerBackGround.getPosition());
+  playerPowerIndicator.setFillColor(sf::Color::Green);
+
   client = c;
   player = p;
 }
@@ -51,6 +59,8 @@ void World::update(float dt) {
   player->update(dt, window);
   client->sendData();
 
+  playerPowerIndicator.setSize(sf::Vector2f {player->power, 20});
+
   for (Projectile & p : projectiles) {
     p.update(dt);
   }
@@ -64,6 +74,8 @@ void World::render() {
 
   //std::cout << others.size() << '\n' << " - " << '\n';
   window.draw(powerText);
+  window.draw(playerPowerBackGround);
+  window.draw(playerPowerIndicator);
 
   if (player->canShoot) {
     window.draw(ableToShoot);

@@ -28,6 +28,9 @@ private:
   Client * client;
   Player * player;
 
+  sf::RectangleShape playerPowerBackGround;
+  sf::RectangleShape playerPowerIndicator;
+
   std::map<std::string , Player> others;
   std::vector<Projectile> projectiles;
 
