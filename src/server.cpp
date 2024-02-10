@@ -54,6 +54,10 @@ void Server::receiveData() {
             Connection c;
             c.address = senderIp;
             c.port = senderPort;
+            c.x = playerOnePositionX;
+            c.y = playerOnePositionY;
+            c.rotation = playerOneInitialAngle;
+            c.canShoot = true;
 
             connections[senderIp.toString() + std::to_string(senderPort)] = c;
 
@@ -86,40 +90,53 @@ void Server::receiveData() {
             Connection c;
             c.address = senderIp;
             c.port = senderPort;
-
-            connections[senderIp.toString() + std::to_string(senderPort)] = c;
+            c.x = playerTwoPositionX;
+            c.y = playerTwoPositionY;
+            c.rotation = playerTwoInitialAngle;
+            c.canShoot = false;
 
             packet.clear();
 
             packet << playerTwoNumber << playerTwoPositionX <<
-              playerTwoPositionY << playerTwoInitialAngle <<
-              playerTwoLowerBoundAngle << playerTwoUpperBoundAngle;
+                   playerTwoPositionY << playerTwoInitialAngle <<
+                   playerTwoLowerBoundAngle << playerTwoUpperBoundAngle;
+
+            std::cout << playerTwoNumber << ' ' << playerTwoPositionX << ' ' << playerTwoPositionY << '\n';
 
             if (serverSocket.send(packet, senderIp, senderPort) == sf::Socket::Done) {
               std::cout << "Sent player 2 initial data.\n";
             }
 
+            packet.clear();
+
+            sendInitialData(c);
+            std::string sender{senderIp.toString() + std::to_string(senderPort)};
+            connections[sender] = c;
+
             std::cout << "Made new connection with: " << senderIp << c.port << '\n';
             std::cout << "Total connections: " << connections.size() << '\n';
+
+            packet << Settings::PacketTypes::NEW_CONNECTION << sender << c.x << c.y << c.rotation;
+            sendData(sender, packet);
+            packet.clear();
           }
         }
 
 
         break;
       }
-      case Settings::PacketTypes::POSITION_CHANGE: {
-        float x, y;
+      case Settings::PacketTypes::ROTATION_CHANGE: {
+        float rotation;
         unsigned short senderPort;
 
-        packet >> senderPort >> x >> y;
+        packet >> senderPort >> rotation;
 
         std::string sender(senderIp.toString() + std::to_string(senderPort));
         if (connections.contains(sender)) {
-          connections[sender].x = x;
-          connections[sender].y = y;
+          connections[sender].rotation = rotation;
 
           sf::Packet toSendPacket;
-          toSendPacket << Settings::PacketTypes::POSITION_CHANGE << sender << x << y;
+          toSendPacket << Settings::PacketTypes::ROTATION_CHANGE << sender << rotation;
 
           sendData(sender, toSendPacket);
         }
@@ -165,8 +182,7 @@ void Server::sendInitialData(Connection & c) {
   sf::Packet p;
 
   for (const auto & [key, val] : connections) {
-    std::string otherConnection{val.address.toString() + std::to_string(val.port)};
-    p << Settings::PacketTypes::NEW_CONNECTION << otherConnection << val.x << val.y;
+    p << Settings::PacketTypes::NEW_CONNECTION << key << val.x << val.y << val.rotation;
     if (serverSocket.send(p, c.address, c.port) == sf::Socket::Done) {
 
     }

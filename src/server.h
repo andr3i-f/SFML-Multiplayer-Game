@@ -12,6 +12,7 @@ struct Connection {
   unsigned short port;
 
   // player positions
+  float rotation;
   float x;
   float y;
   int playerNumber;

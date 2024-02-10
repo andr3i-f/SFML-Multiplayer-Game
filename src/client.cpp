@@ -33,7 +33,7 @@ Client::Client(Player *& player) {
   }
 
   p >> player->playerNumber >> player->position.x >> player->position.y >> player->initialAngle >> player->lowerBoundAngle >> player->upperBoundAngle;
-
+  std::cout << player->playerNumber << ' ' << player->position.x << ' ' << player->position.y << '\n';
   player->cannon.setRotation(player->initialAngle);
   player->body.setPosition(player->position.x, player->position.y);
   player->cannon.setPosition(player->position.x, player->position.y);
@@ -54,22 +54,21 @@ void Client::receiveData(std::map<std::string , Player> & others) {
     switch (Settings::PacketTypes(header)) {
       case Settings::PacketTypes::NEW_CONNECTION: {
         std::string k;
-        float x, y;
+        float x, y, rotation;
 
-        p >> k >> x >> y;
-        others[k] = Player{x, y};
+        p >> k >> x >> y >> rotation;
+        others[k] = Player{x, y, rotation};
 
         break;
       }
-      case Settings::PacketTypes::POSITION_CHANGE: {
+      case Settings::PacketTypes::ROTATION_CHANGE: {
         std::string k;
-        float x, y;
+        float otherRotation;
 
-        p >> k >> x >> y;
+        p >> k >> otherRotation;
         if (others.contains(k)) {
-          others[k].player.setPosition(x, y);
+          others[k].cannon.setRotation(otherRotation);
         }
-        //std::cout << "Recieved player position: " << x << y << '\n';
 
         break;
       }
@@ -103,7 +102,7 @@ void Client::receiveData(std::map<std::string , Player> & others) {
 void Client::sendData() {
   std::string msg;
   sf::Packet p;
-  p << Settings::PacketTypes::POSITION_CHANGE << port << player->player.getPosition().x << player->player.getPosition().y;
+  p << Settings::PacketTypes::ROTATION_CHANGE << port << player->cannon.getRotation();
 
   if (socket.send(p, serverIp, serverPort) == sf::Socket::Done) {
 

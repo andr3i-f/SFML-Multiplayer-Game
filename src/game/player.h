@@ -11,14 +11,12 @@
 class Player {
 public:
   Player();
-  Player(float, float);
+  Player(float, float, float);
   void update(float, sf::RenderWindow &);
   void render(sf::RenderWindow &);
   void shoot();
 
 public:
-  sf::RectangleShape player;
-
   sf::RectangleShape body;
   sf::RectangleShape cannon;
 

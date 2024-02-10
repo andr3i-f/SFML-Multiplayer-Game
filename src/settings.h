@@ -3,7 +3,8 @@
 namespace Settings {
   enum PacketTypes : int {
       NEW_CONNECTION = 1,
-      POSITION_CHANGE = 2,
-      DISCONNECT = 3
+      ROTATION_CHANGE = 2,
+      PLAYER_SHOOT = 3,
+      DISCONNECT = 4
   };
 }

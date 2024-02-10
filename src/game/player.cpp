@@ -1,11 +1,6 @@
 #include "player.h"
 
 Player::Player() {
-  player.setSize( sf::Vector2f{25.f, 25.f} );
-  player.setFillColor(sf::Color::Red);
-  player.setOrigin( player.getPosition().x / 2, player.getPosition().y / 2 );
-  //player.setPosition( sf::Vector2f{100.f, 100.f} );
-
   body.setSize( sf::Vector2f{35.f , 20.f} );
   cannon.setSize( sf::Vector2f{30.f , 8.f} );
 
@@ -19,11 +14,20 @@ Player::Player() {
   cannon.setFillColor(sf::Color::Red);
 }
 
-Player::Player(float x, float y) {
-  player.setSize( sf::Vector2f{25.f, 25.f} );
-  player.setFillColor(sf::Color::Red);
-  player.setOrigin( player.getPosition().x / 2, player.getPosition().y / 2 );
-  player.setPosition( sf::Vector2f{x, y} );
+Player::Player(float x, float y, float rotation) {
+  body.setSize( sf::Vector2f{35.f, 20.f} );
+  cannon.setSize( sf::Vector2f{30.f, 8.f} );
+
+  body.setOrigin(body.getSize().x / 2, body.getSize().y / 2);
+  cannon.setOrigin(cannon.getSize().x - cannon.getSize().x, cannon.getSize().y / 2);
+
+  body.setPosition(x, y);
+  cannon.setPosition(body.getPosition());
+
+  body.setFillColor(sf::Color::Red);
+  cannon.setFillColor(sf::Color::Blue);
+
+  cannon.setRotation(rotation);
 }
 
 void Player::update(float dt, sf::RenderWindow & w) {
@@ -33,14 +37,14 @@ void Player::update(float dt, sf::RenderWindow & w) {
       if (cannon.getRotation() <= lowerBoundAngle) {
         cannon.setRotation(lowerBoundAngle);
       }
-      std::cout << "angle: " << cannon.getRotation()  << '\n';
+      //std::cout << "angle: " << cannon.getRotation()  << '\n';
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
       cannon.rotate(0.25);
       if (cannon.getRotation() >= upperBoundAngle) {
         cannon.setRotation(upperBoundAngle);
       }
-      std::cout << "angle: " << cannon.getRotation() << '\n';
+      //std::cout << "angle: " << cannon.getRotation() << '\n';
     }
 
     this->calculationAngle = cannon.getRotation() - 270;
