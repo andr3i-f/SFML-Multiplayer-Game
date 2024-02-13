@@ -11,10 +11,11 @@
 class Player {
 public:
   Player();
-  Player(float, float, float);
+  Player(int);
   void update(float, sf::RenderWindow &);
   void render(sf::RenderWindow &);
   void shoot();
+  void setPlayerData();
 
 public:
   sf::Texture texture;

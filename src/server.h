@@ -11,10 +11,8 @@ struct Connection {
   sf::IpAddress address;
   unsigned short port;
 
-  // player positions
+  // player data
   float rotation;
-  float x;
-  float y;
   int playerNumber;
   bool canShoot;
 };

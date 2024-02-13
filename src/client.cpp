@@ -34,17 +34,14 @@ Client::Client(Player *& player) {
 
   }
 
-  p >> player->playerNumber >> player->position.x >> player->position.y >> player->initialAngle >> player->lowerBoundAngle >> player->upperBoundAngle >> player->canShoot;
-  std::cout << player->playerNumber << ' ' << player->position.x << ' ' << player->position.y << '\n';
-  player->barrel.setRotation(player->initialAngle);
-  player->body.setPosition(player->position.x, player->position.y);
-  player->barrel.setPosition(player->position.x, player->position.y);
+  p >> player->playerNumber >> player->canShoot;
+  player->setPlayerData();
 
   socket.setBlocking(false);
   p.clear();
 }
 
-void Client::receiveData(std::map<std::string , Player> & others, std::vector<Projectile> & projectiles) {
+void Client::receiveData(std::map<std::string , Player *> & others, std::vector<Projectile> & projectiles) {
   sf::Packet p;
   sf::IpAddress sIp;
   unsigned short sP;
@@ -56,10 +53,9 @@ void Client::receiveData(std::map<std::string , Player> & others, std::vector<Pr
     switch (Settings::PacketTypes(header)) {
       case Settings::PacketTypes::NEW_CONNECTION: {
         std::string k;
-        float x, y, rotation;
-
-        p >> k >> x >> y >> rotation;
-        others[k] = Player{x, y, rotation};
+        int num;
+        p >> k >> num;
+        others[k] = new Player{num};
 
         break;
       }
@@ -69,7 +65,7 @@ void Client::receiveData(std::map<std::string , Player> & others, std::vector<Pr
 
         p >> k >> otherRotation;
         if (others.contains(k)) {
-          others[k].barrel.setRotation(otherRotation);
+          others[k]->barrel.setRotation(otherRotation);
         }
 
         break;

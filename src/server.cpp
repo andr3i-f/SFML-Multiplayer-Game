@@ -42,11 +42,6 @@ void Server::receiveData() {
             std::cout << "Player 1 Connecting\n";
 
             int playerOneNumber{ 1 };
-            float playerOnePositionX{ 100 };
-            float playerOnePositionY{ 757 };
-            float playerOneInitialAngle{ 315 };
-            float playerOneLowerBoundAngle{ 270 };
-            float playerOneUpperBoundAngle{ 358 };
             unsigned short senderPort;
 
             packet >> senderPort;
@@ -54,18 +49,14 @@ void Server::receiveData() {
             Connection c;
             c.address = senderIp;
             c.port = senderPort;
-            c.x = playerOnePositionX;
-            c.y = playerOnePositionY;
-            c.rotation = playerOneInitialAngle;
             c.canShoot = true;
+            c.playerNumber = playerOneNumber;
 
             connections[senderIp.toString() + std::to_string(senderPort)] = c;
 
             packet.clear();
 
-            packet << playerOneNumber << playerOnePositionX <<
-              playerOnePositionY << playerOneInitialAngle <<
-              playerOneLowerBoundAngle << playerOneUpperBoundAngle << c.canShoot;
+            packet << playerOneNumber << c.canShoot;
 
             if (serverSocket.send(packet, senderIp, senderPort) == sf::Socket::Done) {
               std::cout << "Sent player 1 initial data.\n";
@@ -77,31 +68,20 @@ void Server::receiveData() {
           } else {
             std::cout << "Player 2 Connecting\n";
 
-            int playerTwoNumber{ 2 };
-            float playerTwoPositionX{ 1100 };
-            float playerTwoPositionY{ 757 };
-            float playerTwoInitialAngle{ 225 };
-            float playerTwoLowerBoundAngle{ 178 };
-            float playerTwoUpperBoundAngle{ 270 };
             unsigned short senderPort;
+            int playerTwoNumber{ 2 };
 
             packet >> senderPort;
 
             Connection c;
             c.address = senderIp;
             c.port = senderPort;
-            c.x = playerTwoPositionX;
-            c.y = playerTwoPositionY;
-            c.rotation = playerTwoInitialAngle;
             c.canShoot = false;
+            c.playerNumber = playerTwoNumber;
 
             packet.clear();
 
-            packet << playerTwoNumber << playerTwoPositionX <<
-                   playerTwoPositionY << playerTwoInitialAngle <<
-                   playerTwoLowerBoundAngle << playerTwoUpperBoundAngle << c.canShoot;
-
-            std::cout << playerTwoNumber << ' ' << playerTwoPositionX << ' ' << playerTwoPositionY << '\n';
+            packet << playerTwoNumber << c.canShoot;
 
             if (serverSocket.send(packet, senderIp, senderPort) == sf::Socket::Done) {
               std::cout << "Sent player 2 initial data.\n";
@@ -116,7 +96,9 @@ void Server::receiveData() {
             std::cout << "Made new connection with: " << senderIp << c.port << '\n';
             std::cout << "Total connections: " << connections.size() << '\n';
 
-            packet << Settings::PacketTypes::NEW_CONNECTION << sender << c.x << c.y << c.rotation;
+            packet.clear();
+
+            packet << Settings::PacketTypes::NEW_CONNECTION << sender << c.playerNumber;
             sendData(sender, packet);
             packet.clear();
           }
@@ -207,7 +189,7 @@ void Server::sendInitialData(Connection & c) {
   sf::Packet p;
 
   for (const auto & [key, val] : connections) {
-    p << Settings::PacketTypes::NEW_CONNECTION << key << val.x << val.y << val.rotation;
+    p << Settings::PacketTypes::NEW_CONNECTION << key << val.playerNumber;
     if (serverSocket.send(p, c.address, c.port) == sf::Socket::Done) {
 
     }

@@ -32,6 +32,12 @@ World::World(Client *& c, Player *& p) {
   player = p;
 }
 
+World::~World() {
+  for (auto & [key, value] : others) {
+    delete value;
+  }
+}
+
 void World::run() {
   sf::Clock clock;
   sf::Time t{sf::Time::Zero};
@@ -85,7 +91,7 @@ void World::render() {
   }
 
   for (auto & [key, value] : others) {
-    value.render(window);
+    value->render(window);
   }
 
   for (Projectile & p : projectiles) {

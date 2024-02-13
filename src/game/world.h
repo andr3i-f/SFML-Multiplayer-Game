@@ -11,6 +11,7 @@
 class World {
 public:
   World(Client *&, Player *&);
+  ~World();
 
   void run();
   void update(float dt);
@@ -33,7 +34,7 @@ private:
   sf::RectangleShape playerPowerBackGround;
   sf::RectangleShape playerPowerIndicator;
 
-  std::map<std::string , Player> others;
+  std::map<std::string , Player*> others;
   std::vector<Projectile> projectiles;
 
   std::stringstream ss;

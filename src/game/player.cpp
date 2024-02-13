@@ -7,34 +7,31 @@ Player::Player() {
 
   body.setTexture(texture);
   barrel.setTexture(texture);
-
-  body.setTextureRect(sf::IntRect{0, 0, 81, 57});
-  barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
-
-  body.setOrigin(body.getTextureRect().width / 2, body.getTextureRect().height / 4);
-  barrel.setOrigin(barrel.getTextureRect().width - barrel.getTextureRect().width, barrel.getTextureRect().height / 2);
-
-  body.setPosition(100, 800.f - (body.getTextureRect().height * 0.75));
-  barrel.setPosition(body.getPosition());
 }
 
-Player::Player(float x, float y, float rotation) {
+Player::Player(int num) {
   if (!texture.loadFromFile("assets/images/tank_spritesheet.png")) {
     std::cout << "Could not load spritesheet." << std::endl;
   }
 
   body.setTexture(texture);
   barrel.setTexture(texture);
+  float rotation;
+  
+  std::cout << num << '\n';
+  if (num == 2) {
+    body.setTextureRect(sf::IntRect{0, 74, 81, 57});
+    barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
+    body.setPosition(1100, 757);
+    rotation = 225;
+  } else if (num == 1) {
+    body.setTextureRect(sf::IntRect{0, 0, 81, 57});
+    barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
+    body.setPosition(100, 757);
+    rotation = 315;
+  }
 
-  body.setTextureRect(sf::IntRect{0, 74, 81, 57});
-  barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
-
-  body.setOrigin(body.getTextureRect().width / 2, body.getTextureRect().height / 4);
-  barrel.setOrigin(barrel.getTextureRect().width - barrel.getTextureRect().width, barrel.getTextureRect().height / 2);
-
-  body.setPosition(100, 800.f - (body.getTextureRect().height * 0.75));
   barrel.setPosition(body.getPosition());
-
   barrel.setRotation(rotation);
 }
 
@@ -100,4 +97,38 @@ void Player::shoot() {
   playerHasShot = true;
 
   //projectiles.push_back(Projectile{endOfCannonPosition, angleInRad, initialVelocity});
+}
+
+void Player::setPlayerData() {
+  if (playerNumber == 1) {
+    initialAngle = 315;
+    upperBoundAngle = 358;
+    lowerBoundAngle = 270;
+    position.x = 100;
+    position.y = 757;
+
+    body.setTextureRect(sf::IntRect{0, 0, 81, 57});
+    barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
+
+    body.setOrigin(body.getTextureRect().width / 2, body.getTextureRect().height / 4);
+    barrel.setOrigin(barrel.getTextureRect().width - barrel.getTextureRect().width, barrel.getTextureRect().height / 2);
+  } else if (playerNumber == 2) {
+    initialAngle = 225;
+    upperBoundAngle = 270;
+    lowerBoundAngle = 178;
+    position.x = 1100;
+    position.y = 757;
+
+    body.setTextureRect(sf::IntRect{0, 74, 81, 57});
+    barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
+
+    body.setOrigin(body.getTextureRect().width / 2, body.getTextureRect().height / 4);
+    barrel.setOrigin(barrel.getTextureRect().width - barrel.getTextureRect().width, barrel.getTextureRect().height / 2);
+  } else {
+    std::cout << "Player num is not 1 or 2." << std::endl;
+  }
+
+  body.setPosition(position.x, position.y);
+  barrel.setPosition(body.getPosition());
+  barrel.setRotation(initialAngle);
 }
