@@ -17,8 +17,15 @@ public:
   void shoot();
 
 public:
+  sf::Texture texture;
+
+  sf::Sprite body;
+  sf::Sprite barrel;
+
+  /*
   sf::RectangleShape body;
   sf::RectangleShape cannon;
+  */
 
   float calculationAngle;
   float initialAngle;

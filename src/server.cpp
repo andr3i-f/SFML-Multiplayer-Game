@@ -43,7 +43,7 @@ void Server::receiveData() {
 
             int playerOneNumber{ 1 };
             float playerOnePositionX{ 100 };
-            float playerOnePositionY{ 790 };
+            float playerOnePositionY{ 757 };
             float playerOneInitialAngle{ 315 };
             float playerOneLowerBoundAngle{ 270 };
             float playerOneUpperBoundAngle{ 358 };
@@ -79,7 +79,7 @@ void Server::receiveData() {
 
             int playerTwoNumber{ 2 };
             float playerTwoPositionX{ 1100 };
-            float playerTwoPositionY{ 790 };
+            float playerTwoPositionY{ 757 };
             float playerTwoInitialAngle{ 225 };
             float playerTwoLowerBoundAngle{ 178 };
             float playerTwoUpperBoundAngle{ 270 };

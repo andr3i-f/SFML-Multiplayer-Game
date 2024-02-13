@@ -1,48 +1,56 @@
 #include "player.h"
 
 Player::Player() {
-  body.setSize( sf::Vector2f{35.f , 20.f} );
-  cannon.setSize( sf::Vector2f{30.f , 8.f} );
+  if (!texture.loadFromFile("assets/images/tank_spritesheet.png")) {
+    std::cout << "Could not load spritesheet." << std::endl;
+  }
 
-  body.setOrigin(body.getSize().x / 2, body.getSize().y / 2);
-  cannon.setOrigin(cannon.getSize().x - cannon.getSize().x, cannon.getSize().y / 2);
+  body.setTexture(texture);
+  barrel.setTexture(texture);
 
-  body.setPosition(100.f, 800.f - (body.getSize().y / 2));
-  cannon.setPosition(body.getPosition());
+  body.setTextureRect(sf::IntRect{0, 0, 81, 57});
+  barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
 
-  body.setFillColor(sf::Color::Blue);
-  cannon.setFillColor(sf::Color::Red);
+  body.setOrigin(body.getTextureRect().width / 2, body.getTextureRect().height / 4);
+  barrel.setOrigin(barrel.getTextureRect().width - barrel.getTextureRect().width, barrel.getTextureRect().height / 2);
+
+  body.setPosition(100, 800.f - (body.getTextureRect().height * 0.75));
+  barrel.setPosition(body.getPosition());
 }
 
 Player::Player(float x, float y, float rotation) {
-  body.setSize( sf::Vector2f{35.f, 20.f} );
-  cannon.setSize( sf::Vector2f{30.f, 8.f} );
+  if (!texture.loadFromFile("assets/images/tank_spritesheet.png")) {
+    std::cout << "Could not load spritesheet." << std::endl;
+  }
 
-  body.setOrigin(body.getSize().x / 2, body.getSize().y / 2);
-  cannon.setOrigin(cannon.getSize().x - cannon.getSize().x, cannon.getSize().y / 2);
+  body.setTexture(texture);
+  barrel.setTexture(texture);
 
-  body.setPosition(x, y);
-  cannon.setPosition(body.getPosition());
+  body.setTextureRect(sf::IntRect{0, 74, 81, 57});
+  barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
 
-  body.setFillColor(sf::Color::Red);
-  cannon.setFillColor(sf::Color::Blue);
+  body.setOrigin(body.getTextureRect().width / 2, body.getTextureRect().height / 4);
+  barrel.setOrigin(barrel.getTextureRect().width - barrel.getTextureRect().width, barrel.getTextureRect().height / 2);
 
-  cannon.setRotation(rotation);
+  body.setPosition(100, 800.f - (body.getTextureRect().height * 0.75));
+  barrel.setPosition(body.getPosition());
+
+  barrel.setRotation(rotation);
 }
 
 void Player::update(float dt, sf::RenderWindow & w) {
   if (w.hasFocus()) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-      cannon.rotate(-0.25);
-      if (cannon.getRotation() <= lowerBoundAngle) {
-        cannon.setRotation(lowerBoundAngle);
+      barrel.rotate(-0.25);
+      if (barrel.getRotation() <= lowerBoundAngle) {
+        barrel.setRotation(lowerBoundAngle);
       }
       //std::cout << "angle: " << cannon.getRotation()  << '\n';
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-      cannon.rotate(0.25);
-      if (cannon.getRotation() >= upperBoundAngle) {
-        cannon.setRotation(upperBoundAngle);
+      barrel.rotate(0.25);
+      if (barrel.getRotation() >= upperBoundAngle) {
+        barrel.setRotation(upperBoundAngle);
       }
       //std::cout << "angle: " << cannon.getRotation() << '\n';
     }
@@ -61,7 +69,7 @@ void Player::update(float dt, sf::RenderWindow & w) {
 
     //std::cout << power << '\n';
 
-    this->calculationAngle = cannon.getRotation() - 270;
+    this->calculationAngle = barrel.getRotation() - 270;
     if (this->calculationAngle == -270) {
       this->calculationAngle = 90;
     }
@@ -77,15 +85,15 @@ void Player::update(float dt, sf::RenderWindow & w) {
 }
 
 void Player::render(sf::RenderWindow & w) {
+  w.draw(barrel);
   w.draw(body);
-  w.draw(cannon);
 }
 
 void Player::shoot() {
   angleInRad = static_cast<float>(calculationAngle * PI / 180);
   //std::cout << angleInRad << '\n';
-  endOfCannonX = cannon.getPosition().x + cannon.getSize().x * std::sin(angleInRad);
-  endOfCannonY = cannon.getPosition().y - cannon.getSize().x * std::cos(angleInRad);
+  endOfCannonX = barrel.getPosition().x + barrel.getTextureRect().width * std::sin(angleInRad);
+  endOfCannonY = barrel.getPosition().y - barrel.getTextureRect().width * std::cos(angleInRad);
 
 
   // call client method to shoot

@@ -36,9 +36,9 @@ Client::Client(Player *& player) {
 
   p >> player->playerNumber >> player->position.x >> player->position.y >> player->initialAngle >> player->lowerBoundAngle >> player->upperBoundAngle >> player->canShoot;
   std::cout << player->playerNumber << ' ' << player->position.x << ' ' << player->position.y << '\n';
-  player->cannon.setRotation(player->initialAngle);
+  player->barrel.setRotation(player->initialAngle);
   player->body.setPosition(player->position.x, player->position.y);
-  player->cannon.setPosition(player->position.x, player->position.y);
+  player->barrel.setPosition(player->position.x, player->position.y);
 
   socket.setBlocking(false);
   p.clear();
@@ -69,7 +69,7 @@ void Client::receiveData(std::map<std::string , Player> & others, std::vector<Pr
 
         p >> k >> otherRotation;
         if (others.contains(k)) {
-          others[k].cannon.setRotation(otherRotation);
+          others[k].barrel.setRotation(otherRotation);
         }
 
         break;
@@ -137,7 +137,7 @@ void Client::shoot(float & x, float & y, float & angleInRad, float & initalVeloc
 void Client::sendData() {
   std::string msg;
   sf::Packet p;
-  p << Settings::PacketTypes::ROTATION_CHANGE << port << player->cannon.getRotation();
+  p << Settings::PacketTypes::ROTATION_CHANGE << port << player->barrel.getRotation();
 
   if (socket.send(p, serverIp, serverPort) == sf::Socket::Done) {
 
