@@ -22,11 +22,16 @@ Player::Player(int num) {
   if (num == 2) {
     body.setTextureRect(sf::IntRect{0, 74, 81, 57});
     barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
+    body.setOrigin(body.getTextureRect().width / 2, body.getTextureRect().height / 4);
+    barrel.setOrigin(barrel.getTextureRect().width - barrel.getTextureRect().width, barrel.getTextureRect().height / 2);
     body.setPosition(1100, 757);
+    body.setScale(-1, 1);
     rotation = 225;
   } else if (num == 1) {
     body.setTextureRect(sf::IntRect{0, 0, 81, 57});
     barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
+    body.setOrigin(body.getTextureRect().width / 2, body.getTextureRect().height / 4);
+    barrel.setOrigin(barrel.getTextureRect().width - barrel.getTextureRect().width, barrel.getTextureRect().height / 2);
     body.setPosition(100, 757);
     rotation = 315;
   }
@@ -109,9 +114,6 @@ void Player::setPlayerData() {
 
     body.setTextureRect(sf::IntRect{0, 0, 81, 57});
     barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
-
-    body.setOrigin(body.getTextureRect().width / 2, body.getTextureRect().height / 4);
-    barrel.setOrigin(barrel.getTextureRect().width - barrel.getTextureRect().width, barrel.getTextureRect().height / 2);
   } else if (playerNumber == 2) {
     initialAngle = 225;
     upperBoundAngle = 270;
@@ -121,13 +123,13 @@ void Player::setPlayerData() {
 
     body.setTextureRect(sf::IntRect{0, 74, 81, 57});
     barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
-
-    body.setOrigin(body.getTextureRect().width / 2, body.getTextureRect().height / 4);
-    barrel.setOrigin(barrel.getTextureRect().width - barrel.getTextureRect().width, barrel.getTextureRect().height / 2);
+    body.setScale(-1, 1);
   } else {
     std::cout << "Player num is not 1 or 2." << std::endl;
   }
 
+  body.setOrigin(body.getTextureRect().width / 2, body.getTextureRect().height / 4);
+  barrel.setOrigin(barrel.getTextureRect().width - barrel.getTextureRect().width, barrel.getTextureRect().height / 2);
   body.setPosition(position.x, position.y);
   barrel.setPosition(body.getPosition());
   barrel.setRotation(initialAngle);
