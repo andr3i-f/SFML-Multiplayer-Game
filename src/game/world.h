@@ -36,6 +36,7 @@ private:
 
   std::map<std::string , Player*> others;
   std::vector<Projectile> projectiles;
+  std::vector<sf::RectangleShape> objects;
 
   std::stringstream ss;
 };

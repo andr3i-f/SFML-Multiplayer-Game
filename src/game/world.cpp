@@ -28,6 +28,13 @@ World::World(Client *& c, Player *& p) {
   playerPowerIndicator.setPosition(playerPowerBackGround.getPosition());
   playerPowerIndicator.setFillColor(sf::Color::Green);
 
+  sf::RectangleShape wall;
+  wall.setSize(sf::Vector2f {300, 350});
+  wall.setOrigin(wall.getSize().x / 2, wall.getSize().y);
+  wall.setPosition(sf::Vector2f {600, 800});
+  wall.setFillColor(sf::Color::White);
+  objects.push_back(wall);
+
   client = c;
   player = p;
 }
@@ -98,6 +105,10 @@ void World::render() {
     p.render(window);
   }
 
+  for (sf::RectangleShape & o : objects) {
+    window.draw(o);
+  }
+
   window.display();
 }
 
@@ -121,7 +132,7 @@ void World::checkCollision() {
 
 void World::deleteProjectiles() {
   for (int x{}; x < projectiles.size(); x++) {
-    if (projectiles[x].position.y > 850) {
+    if (projectiles[x].position.y > 850 || projectiles[x].projectile.getGlobalBounds().intersects(objects[0].getGlobalBounds())) {
       projectiles.erase(projectiles.begin() + x);
       std::cout << "Deleted projectile\n";
     }
