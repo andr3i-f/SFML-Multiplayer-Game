@@ -6,16 +6,19 @@
 #include <string>
 
 #include "settings.h"
+#include "game/world.h"
 #include "game/player.h"
 
 class Client {
 public:
-  Client(Player *&);
+  Client(Player *&, World *&);
 
-  void receiveData(std::map<std::string, Player *> &, std::vector<Projectile> &);
+  void receiveData();
   void sendData();
   void disconnect();
   void shoot(float &, float &, float &, float &);
+
+  void run();
 
 private:
   sf::IpAddress serverIp;
@@ -26,4 +29,5 @@ private:
   sf::UdpSocket socket;
 
   Player * player;
+  World * world;
 };

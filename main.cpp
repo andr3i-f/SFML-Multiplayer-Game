@@ -12,12 +12,13 @@ int main(int argc, char ** argv) {
     Server s;
     s.run();
   } else if (argv[1][0] == 'c') {
-    Player * p = new Player;
-    Client * c = new Client{p};
-    World w{c, p};
-    w.run();
 
-    delete c;
+    Player * p = new Player;
+    World * w = new World{p};
+
+    Client c{p, w};
+
+    delete w;
     delete p;
   }
 }

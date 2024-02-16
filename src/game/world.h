@@ -5,12 +5,14 @@
 #include <map>
 #include <sstream>
 
-#include "../client.h"
 #include "player.h"
+#include "../client.h"
+
+class Client;
 
 class World {
 public:
-  World(Client *&, Player *&);
+  World(Player *&);
   ~World();
 
   void run();
@@ -20,7 +22,6 @@ public:
   void checkCollision();
   void deleteProjectiles();
 
-private:
   sf::RenderWindow window{ sf::VideoMode(1200, 800), "Game" };
 
   sf::Font font;
@@ -28,7 +29,6 @@ private:
   sf::Text ableToShoot;
   sf::Text powerText;
 
-  Client * client;
   Player * player;
 
   sf::RectangleShape playerPowerBackGround;

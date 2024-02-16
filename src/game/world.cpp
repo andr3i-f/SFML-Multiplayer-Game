@@ -1,6 +1,6 @@
 #include "world.h"
 
-World::World(Client *& c, Player *& p) {
+World::World(Player *& p) {
   window.setVerticalSyncEnabled(true);
 
   if (!font.loadFromFile("assets/fonts/arial.ttf")) {
@@ -35,7 +35,6 @@ World::World(Client *& c, Player *& p) {
   wall.setFillColor(sf::Color::White);
   objects.push_back(wall);
 
-  client = c;
   player = p;
 }
 
@@ -52,14 +51,16 @@ void World::run() {
 
   while (window.isOpen()) {
     processEvents();
-    client->receiveData(others, projectiles);
+    //ptr();
+    //client->receiveData(others, projectiles);
     //std::cout << "Other size: " << others.size()  << ' ' << t.asMilliseconds() << '\n';
 
     t += clock.restart();
     while (t > dt) {
       t -= dt;
       processEvents();
-      client->receiveData(others, projectiles);
+      //sPtr();
+      //client->receiveData(others, projectiles);
       update(dt.asSeconds());
     }
 
@@ -70,7 +71,8 @@ void World::run() {
 void World::update(float dt) {
   // update objects here
   player->update(dt, window);
-  client->sendData();
+
+  //client->sendData();
 
   playerPowerIndicator.setSize(sf::Vector2f {player->power, 20});
 
@@ -116,7 +118,7 @@ void World::processEvents() {
   for (sf::Event event; window.pollEvent(event);) {
     if (event.type == sf::Event::Closed) {
       window.close();
-      client->disconnect();
+      //client->disconnect();
     }
   }
 }
@@ -125,7 +127,7 @@ void World::checkCollision() {
   for (Projectile & p : projectiles) {
     if (p.projectile.getGlobalBounds().intersects(player->body.getGlobalBounds())) {
       window.close();
-      client->disconnect();
+      //client->disconnect();
     }
   }
 }

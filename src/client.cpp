@@ -1,7 +1,8 @@
 #include "client.h"
 
-Client::Client(Player *& player) {
+Client::Client(Player *& player, World *& world) {
   this->player = player;
+  this->world = world;
 
   std::string serverAddress;
   std::cout << "Enter port for you to bind to: ";
@@ -41,7 +42,7 @@ Client::Client(Player *& player) {
   p.clear();
 }
 
-void Client::receiveData(std::map<std::string , Player *> & others, std::vector<Projectile> & projectiles) {
+void Client::receiveData() {
   sf::Packet p;
   sf::IpAddress sIp;
   unsigned short sP;
@@ -55,7 +56,7 @@ void Client::receiveData(std::map<std::string , Player *> & others, std::vector<
         std::string k;
         int num;
         p >> k >> num;
-        others[k] = new Player{num};
+        world->others[k] = new Player{num};
 
         break;
       }
@@ -64,8 +65,8 @@ void Client::receiveData(std::map<std::string , Player *> & others, std::vector<
         float otherRotation;
 
         p >> k >> otherRotation;
-        if (others.contains(k)) {
-          others[k]->barrel.setRotation(otherRotation);
+        if (world->others.contains(k)) {
+          world->others[k]->barrel.setRotation(otherRotation);
         }
 
         break;
@@ -84,7 +85,7 @@ void Client::receiveData(std::map<std::string , Player *> & others, std::vector<
 
         p >> k >> x >> y >> angleInRad >> initialVelocity;
 
-        projectiles.push_back(Projectile{ x, y, angleInRad, initialVelocity });
+        world->projectiles.push_back(Projectile{ x, y, angleInRad, initialVelocity });
         break;
       }
       case Settings::PacketTypes::DISCONNECT: {
@@ -93,13 +94,13 @@ void Client::receiveData(std::map<std::string , Player *> & others, std::vector<
         std::cout << "Player: " << k << " disconnected.\n";
 
         std::cout << "Printing playes before removing: \n";
-        for (const auto & [key, val] : others) {
+        for (const auto & [key, val] : world->others) {
           std::cout << key << '\n';
         }
 
-        others.erase(k);
+        world->others.erase(k);
         std::cout << "Printing players after removing: \n";
-        for (const auto & [key, val] : others) {
+        for (const auto & [key, val] : world->others) {
           std::cout << key << '\n';
         }
 
@@ -149,4 +150,8 @@ void Client::disconnect() {
   if (socket.send(p, serverIp, serverPort) == sf::Socket::Done) {
 
   }
+}
+
+void Client::run() {
+  world->run();
 }
