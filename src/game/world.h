@@ -6,9 +6,6 @@
 #include <sstream>
 
 #include "player.h"
-#include "../client.h"
-
-class Client;
 
 class World {
 public:

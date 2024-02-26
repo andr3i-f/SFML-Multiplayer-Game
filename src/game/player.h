@@ -35,6 +35,7 @@ public:
 
   bool canShoot = false;
   bool playerHasShot = false;
+  bool alive = true;
 
   int playerNumber;
   sf::Vector2f position;

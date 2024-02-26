@@ -153,5 +153,29 @@ void Client::disconnect() {
 }
 
 void Client::run() {
-  world->run();
+  sf::Clock clock;
+  sf::Time t{sf::Time::Zero};
+  sf::Time dt{sf::seconds(1.0f / 60.f)};
+
+  while (world->window.isOpen()) {
+    world->processEvents();
+    //ptr();
+    receiveData();
+    //std::cout << "Other size: " << others.size()  << ' ' << t.asMilliseconds() << '\n';
+
+    t += clock.restart();
+    while (t > dt) {
+      t -= dt;
+      world->processEvents();
+      //sPtr();
+      receiveData();
+      world->update(dt.asSeconds());
+    }
+
+    if (!player->alive || !world->window.isOpen()) {
+      disconnect();
+    }
+
+    world->render();
+  }
 }

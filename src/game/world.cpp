@@ -44,30 +44,6 @@ World::~World() {
   }
 }
 
-void World::run() {
-  sf::Clock clock;
-  sf::Time t{sf::Time::Zero};
-  sf::Time dt{sf::seconds(1.0f / 60.f)};
-
-  while (window.isOpen()) {
-    processEvents();
-    //ptr();
-    //client->receiveData(others, projectiles);
-    //std::cout << "Other size: " << others.size()  << ' ' << t.asMilliseconds() << '\n';
-
-    t += clock.restart();
-    while (t > dt) {
-      t -= dt;
-      processEvents();
-      //sPtr();
-      //client->receiveData(others, projectiles);
-      update(dt.asSeconds());
-    }
-
-    render();
-  }
-}
-
 void World::update(float dt) {
   // update objects here
   player->update(dt, window);
@@ -118,7 +94,6 @@ void World::processEvents() {
   for (sf::Event event; window.pollEvent(event);) {
     if (event.type == sf::Event::Closed) {
       window.close();
-      //client->disconnect();
     }
   }
 }
@@ -127,7 +102,7 @@ void World::checkCollision() {
   for (Projectile & p : projectiles) {
     if (p.projectile.getGlobalBounds().intersects(player->body.getGlobalBounds())) {
       window.close();
-      //client->disconnect();
+      player->alive = false;
     }
   }
 }

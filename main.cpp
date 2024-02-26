@@ -17,6 +17,7 @@ int main(int argc, char ** argv) {
     World * w = new World{p};
 
     Client c{p, w};
+    c.run();
 
     delete w;
     delete p;
