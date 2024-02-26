@@ -19,7 +19,7 @@ public:
   void checkCollision();
   void deleteProjectiles();
 
-  sf::RenderWindow window{ sf::VideoMode(1200, 800), "Game" };
+  sf::RenderWindow window;
 
   sf::Font font;
 

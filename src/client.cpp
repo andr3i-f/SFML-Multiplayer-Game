@@ -40,6 +40,7 @@ Client::Client(Player *& player, World *& world) {
 
   socket.setBlocking(false);
   p.clear();
+  world->window.create(sf::VideoMode(1200, 800), "Game");
 }
 
 void Client::receiveData() {
@@ -159,7 +160,6 @@ void Client::run() {
 
   while (world->window.isOpen()) {
     world->processEvents();
-    //ptr();
     receiveData();
     //std::cout << "Other size: " << others.size()  << ' ' << t.asMilliseconds() << '\n';
 
@@ -167,7 +167,7 @@ void Client::run() {
     while (t > dt) {
       t -= dt;
       world->processEvents();
-      //sPtr();
+      sendData();
       receiveData();
       world->update(dt.asSeconds());
     }
