@@ -3,6 +3,8 @@
 World::World(Player *& p) {
   window.setVerticalSyncEnabled(true);
 
+  state = MAIN_MENU;
+
   if (!font.loadFromFile("assets/fonts/arial.ttf")) {
     std::cout << "Could not load font\n";
   }
@@ -27,6 +29,31 @@ World::World(Player *& p) {
   playerPowerIndicator.setSize(sf::Vector2f{0, 20});
   playerPowerIndicator.setPosition(playerPowerBackGround.getPosition());
   playerPowerIndicator.setFillColor(sf::Color::Green);
+
+  gameName.setFont(font);
+  gameName.setStyle(sf::Text::Bold);
+  gameName.setCharacterSize(20);
+  gameName.setString("2D Multiplayer Tank Shooter");
+  gameName.setPosition(sf::Vector2f{50, 50});
+
+  userPort.setFont(font);
+  userPort.setStyle(sf::Text::Bold);
+  userPort.setCharacterSize(20);
+  userPort.setString("Enter client port: ");
+  userPort.setPosition(sf::Vector2f{50, 100});
+
+  serverIP.setFont(font);
+  serverIP.setStyle(sf::Text::Bold);
+  serverIP.setCharacterSize(20);
+  serverIP.setString("Enter server IP: ");
+  serverIP.setPosition(sf::Vector2f{50, 150});
+
+
+  serverPort.setFont(font);
+  serverPort.setStyle(sf::Text::Bold);
+  serverPort.setCharacterSize(20);
+  serverPort.setString("Enter server port: ");
+  serverPort.setPosition(sf::Vector2f{50, 200});
 
   sf::RectangleShape wall;
   wall.setSize(sf::Vector2f {300, 350});
@@ -62,6 +89,32 @@ void World::update(float dt) {
 
 void World::render() {
   window.clear();
+
+  switch (state) {
+    case GameState::MAIN_MENU:
+      /*
+       *  Game Name Menu
+       *  Input for own port
+       *  Input for server IP
+       *  Input for server Port
+       *  Join -> joined(switch to playing) / unable to join(remain in main_menu)
+       * */
+
+      window.draw(gameName);
+      window.draw(userPort);
+      window.draw(serverIP);
+      window.draw(serverPort);
+
+      break;
+    case GameState::PLAYING:
+      break;
+    case GameState::LOST:
+      break;
+    case GameState::WON:
+      break;
+    default:
+      break;
+  }
 
   // render objects here
   player->render(window);

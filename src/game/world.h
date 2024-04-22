@@ -7,6 +7,13 @@
 
 #include "player.h"
 
+enum GameState {
+  MAIN_MENU = 0,
+  PLAYING,
+  WON,
+  LOST
+};
+
 class World {
 public:
   World(Player *&);
@@ -25,6 +32,10 @@ public:
 
   sf::Text ableToShoot;
   sf::Text powerText;
+  sf::Text gameName;
+  sf::Text userPort;
+  sf::Text serverIP;
+  sf::Text serverPort;
 
   Player * player;
 
@@ -36,4 +47,6 @@ public:
   std::vector<sf::RectangleShape> objects;
 
   std::stringstream ss;
+
+  GameState state;
 };
