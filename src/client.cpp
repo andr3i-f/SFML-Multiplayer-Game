@@ -5,43 +5,6 @@ Client::Client(Player *& player, World *& world) {
   this->world = world;
   this->address = sf::IpAddress::getLocalAddress();
 
-  /*
-  std::string serverAddress;
-  std::cout << "Enter port for you to bind to: ";
-  std::cin >> port;
-
-  std::cout << "\n-------------------------------------\n";
-
-  std::cout << "Enter server port: ";
-  std::cin >> serverPort;
-  std::cout << "Enter server IP Address: ";
-  std::cin >> serverAddress;
-  serverIp = serverAddress;
-
-  if (socket.bind(port) != sf::Socket::Done) {
-    std::cout << "Client unable to port to: " << port << std::endl;
-  }
-
-  sf::Packet p;
-  p << Settings::PacketTypes::NEW_CONNECTION << port;
-
-  if (socket.send(p, serverIp, serverPort) != sf::Socket::Done) {
-    std::cout << "Client unable to send initial connection to server." << std::endl;
-  }
-
-  p.clear();
-
-  if (socket.receive(p, serverIp, serverPort) != sf::Socket::Done) {
-
-  }
-
-  p >> player->playerNumber >> player->canShoot;
-  player->setPlayerData();
-
-  socket.setBlocking(false);
-  p.clear();
-
-  */
   world->window.create(sf::VideoMode(1200, 800), "Game");
 }
 
@@ -100,7 +63,7 @@ void Client::receiveData() {
         for (const auto & [key, val] : world->others) {
           std::cout << key << '\n';
         }
-
+        delete world->others[k];
         world->others.erase(k);
         std::cout << "Printing players after removing: \n";
         for (const auto & [key, val] : world->others) {
@@ -188,7 +151,7 @@ void Client::run() {
       world->update(dt.asSeconds());
     }
 
-    if ((world->state == GameState::WON || world->state == GameState::LOST) && connected) {
+    if (((world->state == GameState::WON || world->state == GameState::LOST) && connected) || !world->window.isOpen()) {
       disconnect();
     }
 

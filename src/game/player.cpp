@@ -114,6 +114,7 @@ void Player::setPlayerData() {
 
     body.setTextureRect(sf::IntRect{0, 0, 81, 57});
     barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
+    std::cout << "Set player 1 data\n";
   } else if (playerNumber == 2) {
     initialAngle = 225;
     upperBoundAngle = 270;
@@ -124,6 +125,7 @@ void Player::setPlayerData() {
     body.setTextureRect(sf::IntRect{0, 74, 81, 57});
     barrel.setTextureRect(sf::IntRect {0, 134, 47, 14});
     body.setScale(-1, 1);
+    std::cout << "Set player 2 data\n";
   } else {
     std::cout << "Player num is not 1 or 2." << std::endl;
   }
