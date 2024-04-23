@@ -79,14 +79,14 @@ World::World(Player *& p) {
 
   gameWonText.setFont(font);
   gameWonText.setStyle(sf::Text::Bold);
-  gameWonText.setCharacterSize(20);
-  gameWonText.setPosition(sf::Vector2f{450, 300});
+  gameWonText.setCharacterSize(50);
+  gameWonText.setPosition(sf::Vector2f{310, 300});
   gameWonText.setString("You won! Congratulations");
 
   gameLostText.setFont(font);
   gameLostText.setStyle(sf::Text::Bold);
-  gameLostText.setCharacterSize(20);
-  gameLostText.setPosition(sf::Vector2f{450, 300});
+  gameLostText.setCharacterSize(50);
+  gameLostText.setPosition(sf::Vector2f{490, 300});
   gameLostText.setString("You lost!");
 
   clickToContinueText.setFont(font);
