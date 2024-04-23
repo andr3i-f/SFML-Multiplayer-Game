@@ -4,6 +4,7 @@ Client::Client(Player *& player, World *& world) {
   this->player = player;
   this->world = world;
 
+  /*
   std::string serverAddress;
   std::cout << "Enter port for you to bind to: ";
   std::cin >> port;
@@ -40,6 +41,8 @@ Client::Client(Player *& player, World *& world) {
 
   socket.setBlocking(false);
   p.clear();
+
+  */
   world->window.create(sf::VideoMode(1200, 800), "Game");
 }
 
@@ -160,15 +163,15 @@ void Client::run() {
 
   while (world->window.isOpen()) {
     world->processEvents();
-    receiveData();
+    //receiveData();
     //std::cout << "Other size: " << others.size()  << ' ' << t.asMilliseconds() << '\n';
 
     t += clock.restart();
     while (t > dt) {
       t -= dt;
       world->processEvents();
-      sendData();
-      receiveData();
+      //sendData();
+      //receiveData();
       world->update(dt.asSeconds());
     }
 

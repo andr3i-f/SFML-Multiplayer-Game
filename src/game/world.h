@@ -26,6 +26,28 @@ public:
   void checkCollision();
   void deleteProjectiles();
 
+  struct UserInputWindow {
+    UserInputWindow();
+
+    enum SelectedBox {
+      userPortSelect = 0,
+      serverIPSelect,
+      serverPortSelect
+    };
+
+    SelectedBox currentSelected;
+
+    sf::RectangleShape userPortBox;
+    sf::RectangleShape serverIPBox;
+    sf::RectangleShape serverPortBox;
+
+
+  public:
+    void update();
+
+    void draw(sf::RenderWindow&);
+  };
+
   sf::RenderWindow window;
 
   sf::Font font;
@@ -36,6 +58,11 @@ public:
   sf::Text userPort;
   sf::Text serverIP;
   sf::Text serverPort;
+
+  UserInputWindow uiw;
+  std::string userPortInput{};
+  std::string serverIPInput{};
+  std::string serverPortInput{};
 
   Player * player;
 

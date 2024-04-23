@@ -34,26 +34,27 @@ World::World(Player *& p) {
   gameName.setStyle(sf::Text::Bold);
   gameName.setCharacterSize(20);
   gameName.setString("2D Multiplayer Tank Shooter");
-  gameName.setPosition(sf::Vector2f{50, 50});
+  gameName.setPosition(sf::Vector2f{450, 50});
 
   userPort.setFont(font);
   userPort.setStyle(sf::Text::Bold);
   userPort.setCharacterSize(20);
   userPort.setString("Enter client port: ");
-  userPort.setPosition(sf::Vector2f{50, 100});
+  userPort.setPosition(sf::Vector2f{450, 200});
 
   serverIP.setFont(font);
   serverIP.setStyle(sf::Text::Bold);
   serverIP.setCharacterSize(20);
   serverIP.setString("Enter server IP: ");
-  serverIP.setPosition(sf::Vector2f{50, 150});
-
+  serverIP.setPosition(sf::Vector2f{450, 300});
 
   serverPort.setFont(font);
   serverPort.setStyle(sf::Text::Bold);
   serverPort.setCharacterSize(20);
   serverPort.setString("Enter server port: ");
-  serverPort.setPosition(sf::Vector2f{50, 200});
+  serverPort.setPosition(sf::Vector2f{450, 400});
+
+  uiw = UserInputWindow();
 
   sf::RectangleShape wall;
   wall.setSize(sf::Vector2f {300, 350});
@@ -101,12 +102,39 @@ void World::render() {
        * */
 
       window.draw(gameName);
+
       window.draw(userPort);
       window.draw(serverIP);
       window.draw(serverPort);
 
+      uiw.draw(window);
+
       break;
     case GameState::PLAYING:
+
+      // render objects here
+      player->render(window);
+
+      //std::cout << others.size() << '\n' << " - " << '\n';
+      window.draw(powerText);
+      window.draw(playerPowerBackGround);
+      window.draw(playerPowerIndicator);
+
+      if (player->canShoot) {
+        window.draw(ableToShoot);
+      }
+
+      for (auto & [key, value] : others) {
+        value->render(window);
+      }
+
+      for (Projectile & p : projectiles) {
+        p.render(window);
+      }
+
+      for (sf::RectangleShape & o : objects) {
+        window.draw(o);
+      }
       break;
     case GameState::LOST:
       break;
@@ -114,30 +142,6 @@ void World::render() {
       break;
     default:
       break;
-  }
-
-  // render objects here
-  player->render(window);
-
-  //std::cout << others.size() << '\n' << " - " << '\n';
-  window.draw(powerText);
-  window.draw(playerPowerBackGround);
-  window.draw(playerPowerIndicator);
-
-  if (player->canShoot) {
-    window.draw(ableToShoot);
-  }
-
-  for (auto & [key, value] : others) {
-    value->render(window);
-  }
-
-  for (Projectile & p : projectiles) {
-    p.render(window);
-  }
-
-  for (sf::RectangleShape & o : objects) {
-    window.draw(o);
   }
 
   window.display();
@@ -167,4 +171,30 @@ void World::deleteProjectiles() {
       std::cout << "Deleted projectile\n";
     }
   }
+}
+
+World::UserInputWindow::UserInputWindow() {
+  currentSelected = SelectedBox::userPortSelect;
+
+  userPortBox.setSize(sf::Vector2f{180, 30});
+  userPortBox.setPosition(sf::Vector2f{450, 240});
+  userPortBox.setFillColor(sf::Color::White);
+
+  serverIPBox.setSize(sf::Vector2f{180, 30});
+  serverIPBox.setPosition(sf::Vector2f{450, 340});
+  serverIPBox.setFillColor(sf::Color::White);
+
+  serverPortBox.setSize(sf::Vector2f{180, 30});
+  serverPortBox.setPosition(sf::Vector2f {450, 440});
+  serverIPBox.setFillColor(sf::Color::White);
+}
+
+void World::UserInputWindow::draw(sf::RenderWindow & w) {
+  w.draw(userPortBox);
+  w.draw(serverIPBox);
+  w.draw(serverPortBox);
+}
+
+void World::UserInputWindow::update() {
+
 }
