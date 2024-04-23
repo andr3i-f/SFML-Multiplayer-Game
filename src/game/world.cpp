@@ -77,6 +77,24 @@ World::World(Player *& p) {
   joinButtonText.setPosition(uiw.joinButton.getPosition());
   joinButtonText.setString("JOIN");
 
+  gameWonText.setFont(font);
+  gameWonText.setStyle(sf::Text::Bold);
+  gameWonText.setCharacterSize(20);
+  gameWonText.setPosition(sf::Vector2f{450, 300});
+  gameWonText.setString("You won! Congratulations");
+
+  gameLostText.setFont(font);
+  gameLostText.setStyle(sf::Text::Bold);
+  gameLostText.setCharacterSize(20);
+  gameLostText.setPosition(sf::Vector2f{450, 300});
+  gameLostText.setString("You lost!");
+
+  clickToContinueText.setFont(font);
+  clickToContinueText.setStyle(sf::Text::Bold);
+  clickToContinueText.setCharacterSize(20);
+  clickToContinueText.setPosition(sf::Vector2f{450, 400});
+  clickToContinueText.setString("Click to continue to main menu");
+
   sf::RectangleShape wall;
   wall.setSize(sf::Vector2f {300, 350});
   wall.setOrigin(wall.getSize().x / 2, wall.getSize().y);
@@ -100,9 +118,19 @@ void World::update(float dt) {
       break;
     case GameState::PLAYING:
       // update objects here
-      player->update(dt, window);
+      if (!bothPlayersConnected) {
+        if (others.size() != 0) {
+          bothPlayersConnected = true;
+        }
+      }
 
-      //client->sendData();
+      if (bothPlayersConnected) {
+        if (others.size() == 0) {
+          state = GameState::WON;
+        }
+      }
+
+      player->update(dt, window);
 
       playerPowerIndicator.setSize(sf::Vector2f {player->power, 20});
 
@@ -114,8 +142,16 @@ void World::update(float dt) {
       }
       break;
     case GameState::LOST:
+      if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+        state = GameState::MAIN_MENU;
+        clearInput();
+      }
       break;
     case GameState::WON:
+      if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+        state = GameState::MAIN_MENU;
+        clearInput();
+      }
       break;
     default:
       break;
@@ -178,8 +214,12 @@ void World::render() {
       }
       break;
     case GameState::LOST:
+      window.draw(gameLostText);
+      window.draw(clickToContinueText);
       break;
     case GameState::WON:
+      window.draw(gameWonText);
+      window.draw(clickToContinueText);
       break;
     default:
       break;
@@ -199,15 +239,15 @@ void World::processEvents() {
           case UserInputWindow::SelectedBox::userPortSelect:
             if (event.text.unicode == 8 && !userPortInput.empty()) {
               userPortInput.pop_back();
-            } else {
+            } else if (event.text.unicode != 8 ) {
               userPortInput += static_cast<char>(event.text.unicode);
             }
             userPortDisplay.setString(userPortInput);
             break;
           case UserInputWindow::SelectedBox::serverIPSelect:
             if (event.text.unicode == 8 && !serverIPInput.empty()) {
-              serverPortInput.pop_back();
-            } else {
+              serverIPInput.pop_back();
+            } else if (event.text.unicode != 8 ) {
               serverIPInput += static_cast<char>(event.text.unicode);
             }
             serverIPDisplay.setString(serverIPInput);
@@ -215,7 +255,7 @@ void World::processEvents() {
           case UserInputWindow::SelectedBox::serverPortSelect:
             if (event.text.unicode == 8 && !serverPortInput.empty()) {
               serverPortInput.pop_back();
-            } else {
+            } else if (event.text.unicode != 8 ) {
               serverPortInput += static_cast<char>(event.text.unicode);
             }
             serverPortDisplay.setString(serverPortInput);
@@ -231,8 +271,8 @@ void World::processEvents() {
 void World::checkCollision() {
   for (Projectile & p : projectiles) {
     if (p.projectile.getGlobalBounds().intersects(player->body.getGlobalBounds())) {
-      window.close();
       player->alive = false;
+      state = GameState::LOST;
     }
   }
 }
@@ -244,6 +284,16 @@ void World::deleteProjectiles() {
       std::cout << "Deleted projectile\n";
     }
   }
+}
+
+void World::clearInput() {
+  userPortInput.clear();
+  serverIPInput.clear();
+  serverPortInput.clear();
+
+  userPortDisplay.setString(userPortInput);
+  serverIPDisplay.setString(serverIPInput);
+  serverPortDisplay.setString(serverPortInput);
 }
 
 World::UserInputWindow::UserInputWindow() {

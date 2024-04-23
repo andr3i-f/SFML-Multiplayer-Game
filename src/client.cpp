@@ -153,6 +153,8 @@ void Client::disconnect() {
   if (socket.send(p, serverIp, serverPort) == sf::Socket::Done) {
 
   }
+
+  socket.unbind();
 }
 
 void Client::run() {
@@ -185,7 +187,7 @@ void Client::run() {
       world->update(dt.asSeconds());
     }
 
-    if (!player->alive || !world->window.isOpen()) {
+    if (world->state == GameState::WON || world->state == GameState::LOST) {
       disconnect();
     }
 

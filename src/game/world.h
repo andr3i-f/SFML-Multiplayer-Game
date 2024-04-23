@@ -25,6 +25,7 @@ public:
   void processEvents();
   void checkCollision();
   void deleteProjectiles();
+  void clearInput();
 
   struct UserInputWindow {
     UserInputWindow();
@@ -70,6 +71,10 @@ public:
   sf::Text serverIP;
   sf::Text serverPort;
 
+  sf::Text gameWonText;
+  sf::Text gameLostText;
+  sf::Text clickToContinueText;
+
   UserInputWindow uiw;
   sf::Text userPortDisplay;
   sf::Text serverIPDisplay;
@@ -91,4 +96,6 @@ public:
   std::stringstream ss;
 
   GameState state;
+
+  bool bothPlayersConnected{false};
 };
