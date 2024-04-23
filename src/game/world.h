@@ -42,7 +42,9 @@ public:
     sf::RectangleShape serverIPBox;
     sf::RectangleShape serverPortBox;
 
+    sf::Color lightGray{200, 200, 200};
     sf::Color gray{152, 156, 155};
+    sf::Color darkGray{125, 125, 125};
 
 
   public:
@@ -63,6 +65,9 @@ public:
   sf::Text serverPort;
 
   UserInputWindow uiw;
+  sf::Text userPortDisplay;
+  sf::Text serverIPDisplay;
+  sf::Text serverPortDisplay;
   std::string userPortInput{};
   std::string serverIPInput{};
   std::string serverPortInput{};

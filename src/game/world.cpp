@@ -56,6 +56,21 @@ World::World(Player *& p) {
 
   uiw = UserInputWindow();
 
+  userPortDisplay.setFont(font);
+  userPortDisplay.setStyle(sf::Text::Bold);
+  userPortDisplay.setCharacterSize(20);
+  userPortDisplay.setPosition(uiw.userPortBox.getPosition());
+
+  serverPortDisplay.setFont(font);
+  serverPortDisplay.setStyle(sf::Text::Bold);
+  serverPortDisplay.setCharacterSize(20);
+  serverPortDisplay.setPosition(uiw.serverPortBox.getPosition());
+
+  serverIPDisplay.setFont(font);
+  serverIPDisplay.setStyle(sf::Text::Bold);
+  serverIPDisplay.setCharacterSize(20);
+  serverIPDisplay.setPosition(uiw.serverIPBox.getPosition());
+
   sf::RectangleShape wall;
   wall.setSize(sf::Vector2f {300, 350});
   wall.setOrigin(wall.getSize().x / 2, wall.getSize().y);
@@ -111,6 +126,10 @@ void World::render() {
 
       uiw.draw(window);
 
+      window.draw(userPortDisplay);
+      window.draw(serverPortDisplay);
+      window.draw(serverIPDisplay);
+
       break;
     case GameState::PLAYING:
 
@@ -156,7 +175,34 @@ void World::processEvents() {
     }
     if (event.type == sf::Event::TextEntered) {
       if (event.text.unicode < 256) {
-        std::cout << static_cast<char>(event.text.unicode) << '\n';
+        switch (uiw.currentSelected) {
+          case UserInputWindow::SelectedBox::userPortSelect:
+            if (event.text.unicode == 8 && !userPortInput.empty()) {
+              userPortInput.pop_back();
+            } else {
+              userPortInput += static_cast<char>(event.text.unicode);
+            }
+            userPortDisplay.setString(userPortInput);
+            break;
+          case UserInputWindow::SelectedBox::serverIPSelect:
+            if (event.text.unicode == 8 && !serverIPInput.empty()) {
+              serverPortInput.pop_back();
+            } else {
+              serverIPInput += static_cast<char>(event.text.unicode);
+            }
+            serverIPDisplay.setString(serverIPInput);
+            break;
+          case UserInputWindow::SelectedBox::serverPortSelect:
+            if (event.text.unicode == 8 && !serverPortInput.empty()) {
+              serverPortInput.pop_back();
+            } else {
+              serverPortInput += static_cast<char>(event.text.unicode);
+            }
+            serverPortDisplay.setString(serverPortInput);
+            break;
+          case UserInputWindow::SelectedBox::none:
+            break;
+        }
       }
     }
   }
@@ -181,7 +227,7 @@ void World::deleteProjectiles() {
 }
 
 World::UserInputWindow::UserInputWindow() {
-  currentSelected = SelectedBox::userPortSelect;
+  currentSelected = SelectedBox::none;
 
   userPortBox.setSize(sf::Vector2f{180, 30});
   userPortBox.setPosition(sf::Vector2f{450, 240});
@@ -206,17 +252,48 @@ void World::UserInputWindow::update(sf::RenderWindow & w) {
   sf::Vector2i mousePosition{sf::Mouse::getPosition(w)};
   if (userPortBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
     userPortBox.setFillColor(gray);
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      currentSelected = SelectedBox::userPortSelect;
+      serverIPBox.setFillColor(darkGray);
+      serverPortBox.setFillColor(darkGray);
+    }
   } else {
-    userPortBox.setFillColor(sf::Color::White);
+    userPortBox.setFillColor(darkGray);
   }
+
   if (serverIPBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
     serverIPBox.setFillColor(gray);
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      currentSelected = SelectedBox::serverIPSelect;
+      serverPortBox.setFillColor(darkGray);
+      userPortBox.setFillColor(darkGray);
+    }
   } else {
-    serverIPBox.setFillColor(sf::Color::White);
+    serverIPBox.setFillColor(darkGray);
   }
+
   if (serverPortBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
     serverPortBox.setFillColor(gray);
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      currentSelected = SelectedBox::serverPortSelect;
+      userPortBox.setFillColor(darkGray);
+      serverIPBox.setFillColor(darkGray);
+    }
   } else {
-    serverPortBox.setFillColor(sf::Color::White);
+    serverPortBox.setFillColor(darkGray);
+  }
+
+  switch (currentSelected) {
+    case SelectedBox::userPortSelect:
+      userPortBox.setFillColor(lightGray);
+      break;
+    case SelectedBox::serverIPSelect:
+      serverIPBox.setFillColor(lightGray);
+      break;
+    case SelectedBox::serverPortSelect:
+      serverPortBox.setFillColor(lightGray);
+      break;
+    case SelectedBox::none:
+      break;
   }
 }
