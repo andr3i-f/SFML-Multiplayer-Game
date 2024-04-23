@@ -32,4 +32,6 @@ private:
 
   Player * player;
   World * world;
+
+  bool connected{false};
 };

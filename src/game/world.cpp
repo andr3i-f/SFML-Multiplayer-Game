@@ -142,15 +142,15 @@ void World::update(float dt) {
       }
       break;
     case GameState::LOST:
-      if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+      if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && window.hasFocus()) {
         state = GameState::MAIN_MENU;
-        clearInput();
+        //clearInput();
       }
       break;
     case GameState::WON:
-      if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+      if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && window.hasFocus()) {
         state = GameState::MAIN_MENU;
-        clearInput();
+        //clearInput();
       }
       break;
     default:
@@ -376,6 +376,7 @@ void World::UserInputWindow::update(sf::RenderWindow & w) {
     joinButton.setFillColor(lightGreen);
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
       attemptJoin = true;
+      currentSelected = none;
     }
   } else {
     joinButton.setFillColor(darkGreen);

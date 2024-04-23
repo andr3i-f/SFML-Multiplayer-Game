@@ -155,6 +155,7 @@ void Client::disconnect() {
   }
 
   socket.unbind();
+  connected = false;
 }
 
 void Client::run() {
@@ -187,7 +188,7 @@ void Client::run() {
       world->update(dt.asSeconds());
     }
 
-    if (world->state == GameState::WON || world->state == GameState::LOST) {
+    if ((world->state == GameState::WON || world->state == GameState::LOST) && connected) {
       disconnect();
     }
 
@@ -222,6 +223,8 @@ void Client::attemptJoin() {
 
   socket.setBlocking(false);
   p.clear();
+
+  connected = true;
 
   world->state = GameState::PLAYING;
   world->uiw.attemptJoin = false;
