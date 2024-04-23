@@ -32,27 +32,27 @@ World::World(Player *& p) {
 
   gameName.setFont(font);
   gameName.setStyle(sf::Text::Bold);
-  gameName.setCharacterSize(20);
-  gameName.setString("2D Multiplayer Tank Shooter");
-  gameName.setPosition(sf::Vector2f{450, 50});
+  gameName.setCharacterSize(50);
+  gameName.setString("2D Tank Shooter");
+  gameName.setPosition(sf::Vector2f{410, 50});
 
   userPort.setFont(font);
   userPort.setStyle(sf::Text::Bold);
   userPort.setCharacterSize(20);
   userPort.setString("Enter client port: ");
-  userPort.setPosition(sf::Vector2f{450, 200});
+  userPort.setPosition(sf::Vector2f{uiw.userPortBox.getPosition().x, 200});
 
   serverIP.setFont(font);
   serverIP.setStyle(sf::Text::Bold);
   serverIP.setCharacterSize(20);
   serverIP.setString("Enter server IP: ");
-  serverIP.setPosition(sf::Vector2f{450, 300});
+  serverIP.setPosition(sf::Vector2f{uiw.serverIPBox.getPosition().x, 300});
 
   serverPort.setFont(font);
   serverPort.setStyle(sf::Text::Bold);
   serverPort.setCharacterSize(20);
   serverPort.setString("Enter server port: ");
-  serverPort.setPosition(sf::Vector2f{450, 400});
+  serverPort.setPosition(sf::Vector2f{uiw.serverPortBox.getPosition().x, 400});
 
   uiw = UserInputWindow();
 
@@ -74,7 +74,7 @@ World::World(Player *& p) {
   joinButtonText.setFont(font);
   joinButtonText.setStyle(sf::Text::Bold);
   joinButtonText.setCharacterSize(20);
-  joinButtonText.setPosition(uiw.joinButton.getPosition());
+  joinButtonText.setPosition(uiw.joinButton.getPosition().x + 22, uiw.joinButton.getPosition().y + 12);
   joinButtonText.setString("JOIN");
 
   gameWonText.setFont(font);
@@ -94,6 +94,12 @@ World::World(Player *& p) {
   clickToContinueText.setCharacterSize(20);
   clickToContinueText.setPosition(sf::Vector2f{450, 400});
   clickToContinueText.setString("Click to continue to main menu");
+
+  creditsText.setFont(font);
+  creditsText.setStyle(sf::Text::Italic);
+  creditsText.setCharacterSize(15);
+  creditsText.setPosition(sf::Vector2f{820,780});
+  creditsText.setString("2D Tank Multiplayer Game made by Andrei F. using SFML");
 
   sf::RectangleShape wall;
   wall.setSize(sf::Vector2f {300, 350});
@@ -185,6 +191,7 @@ void World::render() {
       window.draw(serverPortDisplay);
       window.draw(serverIPDisplay);
       window.draw(joinButtonText);
+      window.draw(creditsText);
 
       break;
     case GameState::PLAYING:
@@ -300,19 +307,19 @@ World::UserInputWindow::UserInputWindow() {
   currentSelected = SelectedBox::none;
 
   userPortBox.setSize(sf::Vector2f{180, 30});
-  userPortBox.setPosition(sf::Vector2f{450, 240});
+  userPortBox.setPosition(sf::Vector2f{510, 240});
   userPortBox.setFillColor(sf::Color::White);
 
   serverIPBox.setSize(sf::Vector2f{180, 30});
-  serverIPBox.setPosition(sf::Vector2f{450, 340});
+  serverIPBox.setPosition(sf::Vector2f{510, 340});
   serverIPBox.setFillColor(sf::Color::White);
 
   serverPortBox.setSize(sf::Vector2f{180, 30});
-  serverPortBox.setPosition(sf::Vector2f {450, 440});
+  serverPortBox.setPosition(sf::Vector2f {510, 440});
   serverIPBox.setFillColor(sf::Color::White);
 
   joinButton.setSize(sf::Vector2f {100, 50});
-  joinButton.setPosition(450, 500);
+  joinButton.setPosition(550, 500);
   joinButton.setFillColor(sf::Color::Green);
 }
 

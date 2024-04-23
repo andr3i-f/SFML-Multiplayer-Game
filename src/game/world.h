@@ -84,6 +84,8 @@ public:
   std::string serverIPInput{};
   std::string serverPortInput{};
 
+  sf::Text creditsText;
+
   Player * player;
 
   sf::RectangleShape playerPowerBackGround;
