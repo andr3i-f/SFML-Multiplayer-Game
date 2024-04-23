@@ -42,9 +42,15 @@ public:
     sf::RectangleShape serverIPBox;
     sf::RectangleShape serverPortBox;
 
+    sf::RectangleShape joinButton;
+
     sf::Color lightGray{200, 200, 200};
     sf::Color gray{152, 156, 155};
     sf::Color darkGray{125, 125, 125};
+    sf::Color darkGreen{78, 153, 63};
+    sf::Color lightGreen{109, 204, 90};
+
+    bool attemptJoin{false};
 
 
   public:
@@ -68,6 +74,7 @@ public:
   sf::Text userPortDisplay;
   sf::Text serverIPDisplay;
   sf::Text serverPortDisplay;
+  sf::Text joinButtonText;
   std::string userPortInput{};
   std::string serverIPInput{};
   std::string serverPortInput{};

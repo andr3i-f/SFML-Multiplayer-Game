@@ -71,6 +71,12 @@ World::World(Player *& p) {
   serverIPDisplay.setCharacterSize(20);
   serverIPDisplay.setPosition(uiw.serverIPBox.getPosition());
 
+  joinButtonText.setFont(font);
+  joinButtonText.setStyle(sf::Text::Bold);
+  joinButtonText.setCharacterSize(20);
+  joinButtonText.setPosition(uiw.joinButton.getPosition());
+  joinButtonText.setString("JOIN");
+
   sf::RectangleShape wall;
   wall.setSize(sf::Vector2f {300, 350});
   wall.setOrigin(wall.getSize().x / 2, wall.getSize().y);
@@ -88,18 +94,31 @@ World::~World() {
 }
 
 void World::update(float dt) {
-  // update objects here
-  player->update(dt, window);
+  switch (state) {
+    case GameState::MAIN_MENU:
 
-  //client->sendData();
+      break;
+    case GameState::PLAYING:
+      // update objects here
+      player->update(dt, window);
 
-  playerPowerIndicator.setSize(sf::Vector2f {player->power, 20});
+      //client->sendData();
 
-  deleteProjectiles();
-  checkCollision();
+      playerPowerIndicator.setSize(sf::Vector2f {player->power, 20});
 
-  for (Projectile & p : projectiles) {
-    p.update(dt);
+      deleteProjectiles();
+      checkCollision();
+
+      for (Projectile & p : projectiles) {
+        p.update(dt);
+      }
+      break;
+    case GameState::LOST:
+      break;
+    case GameState::WON:
+      break;
+    default:
+      break;
   }
 }
 
@@ -129,6 +148,7 @@ void World::render() {
       window.draw(userPortDisplay);
       window.draw(serverPortDisplay);
       window.draw(serverIPDisplay);
+      window.draw(joinButtonText);
 
       break;
     case GameState::PLAYING:
@@ -240,12 +260,17 @@ World::UserInputWindow::UserInputWindow() {
   serverPortBox.setSize(sf::Vector2f{180, 30});
   serverPortBox.setPosition(sf::Vector2f {450, 440});
   serverIPBox.setFillColor(sf::Color::White);
+
+  joinButton.setSize(sf::Vector2f {100, 50});
+  joinButton.setPosition(450, 500);
+  joinButton.setFillColor(sf::Color::Green);
 }
 
 void World::UserInputWindow::draw(sf::RenderWindow & w) {
   w.draw(userPortBox);
   w.draw(serverIPBox);
   w.draw(serverPortBox);
+  w.draw(joinButton);
 }
 
 void World::UserInputWindow::update(sf::RenderWindow & w) {
@@ -295,5 +320,14 @@ void World::UserInputWindow::update(sf::RenderWindow & w) {
       break;
     case SelectedBox::none:
       break;
+  }
+
+  if (joinButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+    joinButton.setFillColor(lightGreen);
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      attemptJoin = true;
+    }
+  } else {
+    joinButton.setFillColor(darkGreen);
   }
 }

@@ -20,6 +20,8 @@ public:
 
   void run();
 
+  void attemptJoin();
+
 private:
   sf::IpAddress serverIp;
   unsigned short serverPort;

@@ -3,13 +3,12 @@
 Client::Client(Player *& player, World *& world) {
   this->player = player;
   this->world = world;
+  this->address = sf::IpAddress::getLocalAddress();
 
   /*
   std::string serverAddress;
   std::cout << "Enter port for you to bind to: ";
   std::cin >> port;
-
-  this->address = sf::IpAddress::getLocalAddress();
 
   std::cout << "\n-------------------------------------\n";
 
@@ -163,15 +162,26 @@ void Client::run() {
 
   while (world->window.isOpen()) {
     world->processEvents();
-    //receiveData();
+
+    if (world->state == GameState::PLAYING) {
+      receiveData();
+    }
     //std::cout << "Other size: " << others.size()  << ' ' << t.asMilliseconds() << '\n';
+
+    if (world->uiw.attemptJoin) {
+      attemptJoin();
+    }
 
     t += clock.restart();
     while (t > dt) {
       t -= dt;
       world->processEvents();
-      //sendData();
-      //receiveData();
+
+      if (world->state == GameState::PLAYING) {
+        sendData();
+        receiveData();
+      }
+
       world->update(dt.asSeconds());
     }
 
@@ -181,4 +191,36 @@ void Client::run() {
 
     world->render();
   }
+}
+
+void Client::attemptJoin() {
+  serverIp = world->serverIPInput;
+  serverPort = std::stoul(world->serverPortInput);
+  port = std::stoul(world->userPortInput);
+
+  if (socket.bind(port) != sf::Socket::Done) {
+    std::cout << "Unable to bind to port\n";
+  }
+
+  sf::Packet p;
+  p << Settings::PacketTypes::NEW_CONNECTION << port;
+
+  if (socket.send(p, serverIp, serverPort) != sf::Socket::Done) {
+    std::cout << "Client unable to send initial connection to server." << std::endl;
+  }
+
+  p.clear();
+
+  if (socket.receive(p, serverIp, serverPort) != sf::Socket::Done) {
+
+  }
+
+  p >> player->playerNumber >> player->canShoot;
+  player->setPlayerData();
+
+  socket.setBlocking(false);
+  p.clear();
+
+  world->state = GameState::PLAYING;
+  world->uiw.attemptJoin = false;
 }
