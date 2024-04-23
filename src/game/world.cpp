@@ -107,6 +107,8 @@ void World::render() {
       window.draw(serverIP);
       window.draw(serverPort);
 
+      uiw.update(window);
+
       uiw.draw(window);
 
       break;
@@ -152,6 +154,11 @@ void World::processEvents() {
     if (event.type == sf::Event::Closed) {
       window.close();
     }
+    if (event.type == sf::Event::TextEntered) {
+      if (event.text.unicode < 256) {
+        std::cout << static_cast<char>(event.text.unicode) << '\n';
+      }
+    }
   }
 }
 
@@ -195,6 +202,21 @@ void World::UserInputWindow::draw(sf::RenderWindow & w) {
   w.draw(serverPortBox);
 }
 
-void World::UserInputWindow::update() {
-
+void World::UserInputWindow::update(sf::RenderWindow & w) {
+  sf::Vector2i mousePosition{sf::Mouse::getPosition(w)};
+  if (userPortBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+    userPortBox.setFillColor(gray);
+  } else {
+    userPortBox.setFillColor(sf::Color::White);
+  }
+  if (serverIPBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+    serverIPBox.setFillColor(gray);
+  } else {
+    serverIPBox.setFillColor(sf::Color::White);
+  }
+  if (serverPortBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+    serverPortBox.setFillColor(gray);
+  } else {
+    serverPortBox.setFillColor(sf::Color::White);
+  }
 }

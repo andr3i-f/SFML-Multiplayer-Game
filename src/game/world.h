@@ -32,7 +32,8 @@ public:
     enum SelectedBox {
       userPortSelect = 0,
       serverIPSelect,
-      serverPortSelect
+      serverPortSelect,
+      none
     };
 
     SelectedBox currentSelected;
@@ -41,9 +42,11 @@ public:
     sf::RectangleShape serverIPBox;
     sf::RectangleShape serverPortBox;
 
+    sf::Color gray{152, 156, 155};
+
 
   public:
-    void update();
+    void update(sf::RenderWindow&);
 
     void draw(sf::RenderWindow&);
   };
