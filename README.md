@@ -39,7 +39,7 @@ Image of Player 1 shooting.
 cmake -B build -S .
 cmake --build build
 ./build/game c #for client
-./build/gamme s #for server
+./build/game s #for server
 ```
 
 # Credits
