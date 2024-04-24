@@ -9,9 +9,38 @@ The game ends with one of the players being hit by a projectile or exiting the g
 
 Inspired by Tank Wars.
 
+# Controls
+W - increases the power of the projectile
+
+S - decrease the power of the projectile
+
+A - rotates player barrel to the left
+
+D - rotates player barrel to the right
+
+Space - shoots projectile (if it's the player's turn)
+
 # Images
+![Main Menu Image](assets/images/main_menu_image.png)
+Image of the main menu UI, which is what the client sees when opening the game.
+
+![Both Players Connected](assets/images/both_clients_connected.png)
+Image of both players connected at once, the left being Player 1, and the right being Player 2.
+
+![Player Shooting](assets/images/player_shooting.png)
+Image of Player 1 shooting.
 
 # [Demo Video](https://youtu.be/AL8oMHDAfvk)
+
+# How to Build & Run
+
+```bash
+# CMake Minimum Version 3.27
+cmake -B build -S .
+cmake --build build
+./build/game c #for client
+./build/gamme s #for server
+```
 
 # Credits
 Tank images by: www.kenney.nl
