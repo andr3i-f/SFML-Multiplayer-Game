@@ -130,10 +130,6 @@ void Player::setPlayerData() {
     std::cout << "Player num is not 1 or 2." << std::endl;
   }
 
-  canShoot = false;
-  playerHasShot = false;
-  alive = true;
-
   body.setOrigin(body.getTextureRect().width / 2, body.getTextureRect().height / 4);
   barrel.setOrigin(barrel.getTextureRect().width - barrel.getTextureRect().width, barrel.getTextureRect().height / 2);
   body.setPosition(position.x, position.y);

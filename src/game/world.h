@@ -82,8 +82,8 @@ public:
   sf::Text serverPortDisplay;
   sf::Text joinButtonText;
   std::string userPortInput{};
-  std::string serverIPInput{"192.168.254.23"};
-  std::string serverPortInput{"8008"};
+  std::string serverIPInput{};
+  std::string serverPortInput{};
 
   sf::Text creditsText;
 
