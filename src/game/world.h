@@ -26,6 +26,7 @@ public:
   void checkCollision();
   void deleteProjectiles();
   void clearInput();
+  void clearWorld();
 
   struct UserInputWindow {
     UserInputWindow();
@@ -81,8 +82,8 @@ public:
   sf::Text serverPortDisplay;
   sf::Text joinButtonText;
   std::string userPortInput{};
-  std::string serverIPInput{};
-  std::string serverPortInput{};
+  std::string serverIPInput{"192.168.254.23"};
+  std::string serverPortInput{"8008"};
 
   sf::Text creditsText;
 
@@ -91,7 +92,7 @@ public:
   sf::RectangleShape playerPowerBackGround;
   sf::RectangleShape playerPowerIndicator;
 
-  std::map<std::string , Player*> others;
+  std::vector<Player*> others;
   std::vector<Projectile> projectiles;
   std::vector<sf::RectangleShape> objects;
 

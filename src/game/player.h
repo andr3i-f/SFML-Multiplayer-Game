@@ -33,9 +33,9 @@ public:
   float upperBoundAngle;
   float lowerBoundAngle;
 
-  bool canShoot = false;
-  bool playerHasShot = false;
-  bool alive = true;
+  bool canShoot{false};
+  bool playerHasShot{false};
+  bool alive{true};
 
   int playerNumber;
   sf::Vector2f position;

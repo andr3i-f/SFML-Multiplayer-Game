@@ -22,7 +22,7 @@ void Client::receiveData() {
         std::string k;
         int num;
         p >> k >> num;
-        world->others[k] = new Player{num};
+        world->others.push_back(new Player{num});
 
         break;
       }
@@ -31,8 +31,8 @@ void Client::receiveData() {
         float otherRotation;
 
         p >> k >> otherRotation;
-        if (world->others.contains(k)) {
-          world->others[k]->barrel.setRotation(otherRotation);
+        if (!world->others.empty()) {
+          world->others[0]->barrel.setRotation(otherRotation);
         }
 
         break;
@@ -58,19 +58,7 @@ void Client::receiveData() {
         std::string k;
         p >> k;
         std::cout << "Player: " << k << " disconnected.\n";
-
-        std::cout << "Printing playes before removing: \n";
-        for (const auto & [key, val] : world->others) {
-          std::cout << key << '\n';
-        }
-        delete world->others[k];
-        world->others.erase(k);
-        std::cout << "Printing players after removing: \n";
-        for (const auto & [key, val] : world->others) {
-          std::cout << key << '\n';
-        }
-
-        //std::cout << others.size() << '\n';
+        world->clearWorld();
         break;
       }
       default:
@@ -116,7 +104,6 @@ void Client::disconnect() {
   if (socket.send(p, serverIp, serverPort) == sf::Socket::Done) {
 
   }
-
   socket.unbind();
   connected = false;
 }
@@ -132,7 +119,6 @@ void Client::run() {
     if (world->state == GameState::PLAYING) {
       receiveData();
     }
-    //std::cout << "Other size: " << others.size()  << ' ' << t.asMilliseconds() << '\n';
 
     if (world->uiw.attemptJoin) {
       attemptJoin();
@@ -160,6 +146,7 @@ void Client::run() {
 }
 
 void Client::attemptJoin() {
+  socket.setBlocking(true);
   serverIp = world->serverIPInput;
   serverPort = std::stoul(world->serverPortInput);
   port = std::stoul(world->userPortInput);

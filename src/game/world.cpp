@@ -112,8 +112,8 @@ World::World(Player *& p) {
 }
 
 World::~World() {
-  for (auto & [key, value] : others) {
-    delete value;
+  for (size_t i{0}; i < others.size(); ++i) {
+    delete others[i];
   }
 }
 
@@ -125,13 +125,14 @@ void World::update(float dt) {
     case GameState::PLAYING:
       // update objects here
       if (!bothPlayersConnected) {
-        if (others.size() != 0) {
+        if (!others.empty()) {
           bothPlayersConnected = true;
         }
       }
 
       if (bothPlayersConnected) {
-        if (others.size() == 0) {
+        if (others.empty()) {
+          bothPlayersConnected = false;
           state = GameState::WON;
         }
       }
@@ -199,7 +200,6 @@ void World::render() {
       // render objects here
       player->render(window);
 
-      //std::cout << others.size() << '\n' << " - " << '\n';
       window.draw(powerText);
       window.draw(playerPowerBackGround);
       window.draw(playerPowerIndicator);
@@ -208,8 +208,8 @@ void World::render() {
         window.draw(ableToShoot);
       }
 
-      for (auto & [key, value] : others) {
-        value->render(window);
+      for (auto & p: others) {
+        p->render(window);
       }
 
       for (Projectile & p : projectiles) {
@@ -388,4 +388,11 @@ void World::UserInputWindow::update(sf::RenderWindow & w) {
   } else {
     joinButton.setFillColor(darkGreen);
   }
+}
+
+void World::clearWorld() {
+  delete others[0];
+  others[0] = nullptr;
+  others.erase(others.begin());
+  std::cout << "After clearing world: " << others.size() << '\n';
 }

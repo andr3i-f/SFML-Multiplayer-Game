@@ -12,9 +12,9 @@ struct Connection {
   unsigned short port;
 
   // player data
-  float rotation;
-  int playerNumber;
-  bool canShoot;
+  float rotation{};
+  int playerNumber{};
+  bool canShoot{};
 };
 
 class Server {
