@@ -41,8 +41,7 @@ Image of Player 1 shooting.
 # CMake Minimum Version 3.27
 cmake -B build -S .
 cmake --build build
-./build/game c #for client
-./build/game s #for server
+./build/game
 ```
 
 # Credits
