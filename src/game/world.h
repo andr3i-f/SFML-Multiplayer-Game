@@ -13,7 +13,8 @@ enum GameState {
   PLAYING,
   WON,
   LOST,
-  HOST
+  HOST,
+  HOSTING
 };
 
 class World {
@@ -60,10 +61,11 @@ public:
     bool attemptJoin{false};
     bool goToHostScreen{false};
     bool goBackToMain{false};
+    bool attemptStartServer{false};
 
 
   public:
-    void update(sf::RenderWindow&);
+    void update(sf::RenderWindow&, GameState);
 
     void draw(sf::RenderWindow&);
   };
@@ -92,6 +94,7 @@ public:
   sf::Text startServerHostText;
   sf::Text goBackText;
   sf::Text serverIPText;
+  sf::Text hostMenuInfo;
   std::string userPortInput{};
   std::string serverIPInput{};
   std::string serverPortInput{};

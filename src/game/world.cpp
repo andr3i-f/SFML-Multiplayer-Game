@@ -125,6 +125,12 @@ World::World(Player *& p) {
   creditsText.setPosition(sf::Vector2f{820,780});
   creditsText.setString("2D Tank Multiplayer Game made by Andrei F. using SFML");
 
+  hostMenuInfo.setFont(font);
+  hostMenuInfo.setStyle(sf::Text::Bold);
+  hostMenuInfo.setCharacterSize(20);
+  hostMenuInfo.setPosition(sf::Vector2f {275, 400});
+  hostMenuInfo.setString("Server is running, close out of this window to close the server.");
+
   sf::RectangleShape wall;
   wall.setSize(sf::Vector2f {300, 350});
   wall.setOrigin(wall.getSize().x / 2, wall.getSize().y);
@@ -192,6 +198,17 @@ void World::update(float dt) {
         uiw.goBackToMain = false;
         state = MAIN_MENU;
       }
+      if (uiw.attemptStartServer) {
+        server.serverPort = std::stoul(serverPortInput);
+        if (server.initiate()) {
+          serverPortDisplay.setString("Server Port: " + serverPortInput);
+          state = HOSTING;
+        }
+        uiw.attemptStartServer = false;
+      }
+      break;
+    case GameState::HOSTING:
+      server.receiveData();
     default:
       break;
   }
@@ -216,7 +233,7 @@ void World::render() {
       window.draw(serverIP);
       window.draw(serverPort);
 
-      uiw.update(window);
+      uiw.update(window, state);
 
       uiw.draw(window);
 
@@ -262,7 +279,7 @@ void World::render() {
       window.draw(clickToContinueText);
       break;
     case GameState::HOST:
-      uiw.update(window);
+      uiw.update(window, state);
       window.draw(uiw.startServerHostButton);
       window.draw(uiw.serverPortBox);
       window.draw(uiw.goBackButton);
@@ -274,6 +291,11 @@ void World::render() {
       window.draw(goBackText);
       window.draw(serverPortDisplay);
       break;
+    case GameState::HOSTING:
+      window.draw(serverIPText);
+      window.draw(serverPortDisplay);
+      window.draw(creditsText);
+      window.draw(hostMenuInfo);
     default:
       break;
   }
@@ -369,7 +391,7 @@ World::UserInputWindow::UserInputWindow() {
   joinButton.setFillColor(sf::Color::Green);
 
   hostButton.setSize(sf::Vector2f {100, 50});
-  hostButton.setPosition(550, 575);
+  hostButton.setPosition(100, 100);
   hostButton.setFillColor(darkGray);
 
   startServerHostButton.setSize(sf::Vector2f {200, 50});
@@ -377,7 +399,7 @@ World::UserInputWindow::UserInputWindow() {
   startServerHostButton.setFillColor(darkGray);
 
   goBackButton.setSize(sf::Vector2f {100, 50});
-  goBackButton.setPosition(100, 100);
+  goBackButton.setPosition(100, 200);
   goBackButton.setFillColor(darkGreen);
 }
 
@@ -389,93 +411,119 @@ void World::UserInputWindow::draw(sf::RenderWindow & w) {
   w.draw(hostButton);
 }
 
-void World::UserInputWindow::update(sf::RenderWindow & w) {
+void World::UserInputWindow::update(sf::RenderWindow & w, GameState g) {
   sf::Vector2i mousePosition{sf::Mouse::getPosition(w)};
-  if (userPortBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-    userPortBox.setFillColor(gray);
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-      currentSelected = SelectedBox::userPortSelect;
-      serverIPBox.setFillColor(darkGray);
-      serverPortBox.setFillColor(darkGray);
-    }
-  } else {
-    userPortBox.setFillColor(darkGray);
-  }
+  switch (g) {
+    case MAIN_MENU:
 
-  if (serverIPBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-    serverIPBox.setFillColor(gray);
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-      currentSelected = SelectedBox::serverIPSelect;
-      serverPortBox.setFillColor(darkGray);
-      userPortBox.setFillColor(darkGray);
-    }
-  } else {
-    serverIPBox.setFillColor(darkGray);
-  }
+      if (userPortBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+        userPortBox.setFillColor(gray);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+          currentSelected = SelectedBox::userPortSelect;
+          serverIPBox.setFillColor(darkGray);
+          serverPortBox.setFillColor(darkGray);
+        }
+      } else {
+        userPortBox.setFillColor(darkGray);
+      }
 
-  if (serverPortBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-    serverPortBox.setFillColor(gray);
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-      currentSelected = SelectedBox::serverPortSelect;
-      userPortBox.setFillColor(darkGray);
-      serverIPBox.setFillColor(darkGray);
-    }
-  } else {
-    serverPortBox.setFillColor(darkGray);
-  }
+      if (serverIPBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+        serverIPBox.setFillColor(gray);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+          currentSelected = SelectedBox::serverIPSelect;
+          serverPortBox.setFillColor(darkGray);
+          userPortBox.setFillColor(darkGray);
+        }
+      } else {
+        serverIPBox.setFillColor(darkGray);
+      }
 
-  switch (currentSelected) {
-    case SelectedBox::userPortSelect:
-      userPortBox.setFillColor(lightGray);
+      if (serverPortBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+        serverPortBox.setFillColor(gray);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+          currentSelected = SelectedBox::serverPortSelect;
+          userPortBox.setFillColor(darkGray);
+          serverIPBox.setFillColor(darkGray);
+        }
+      } else {
+        serverPortBox.setFillColor(darkGray);
+      }
+
+      switch (currentSelected) {
+        case SelectedBox::userPortSelect:
+          userPortBox.setFillColor(lightGray);
+          break;
+        case SelectedBox::serverIPSelect:
+          serverIPBox.setFillColor(lightGray);
+          break;
+        case SelectedBox::serverPortSelect:
+          serverPortBox.setFillColor(lightGray);
+          break;
+        case SelectedBox::none:
+          break;
+      }
+
+      if (joinButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+        joinButton.setFillColor(lightGreen);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+          attemptJoin = true;
+          currentSelected = none;
+        }
+      } else {
+        joinButton.setFillColor(darkGreen);
+      }
+
+      if (hostButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+        hostButton.setFillColor(lightGray);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+          goToHostScreen = true;
+          currentSelected = none;
+        }
+      } else {
+        hostButton.setFillColor(darkGray);
+      }
+
       break;
-    case SelectedBox::serverIPSelect:
-      serverIPBox.setFillColor(lightGray);
+    case HOST:
+
+      if (startServerHostButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+        startServerHostButton.setFillColor(lightGray);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+          attemptStartServer = true;
+          currentSelected = none;
+        }
+      } else {
+        startServerHostButton.setFillColor(darkGray);
+      }
+
+      if (goBackButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+        goBackButton.setFillColor(lightGreen);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+          goBackToMain = true;
+          currentSelected = none;
+        }
+      } else {
+        goBackButton.setFillColor(darkGreen);
+      }
+
+      if (serverPortBox.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+        serverPortBox.setFillColor(gray);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+          currentSelected = SelectedBox::serverPortSelect;
+          userPortBox.setFillColor(darkGray);
+          serverIPBox.setFillColor(darkGray);
+        }
+      } else {
+        serverPortBox.setFillColor(darkGray);
+      }
+
+      if (currentSelected == SelectedBox::serverPortSelect) {
+        serverPortBox.setFillColor(lightGray);
+      }
+
       break;
-    case SelectedBox::serverPortSelect:
-      serverPortBox.setFillColor(lightGray);
+    default:
       break;
-    case SelectedBox::none:
-      break;
-  }
-
-  if (joinButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-    joinButton.setFillColor(lightGreen);
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-      attemptJoin = true;
-      currentSelected = none;
-    }
-  } else {
-    joinButton.setFillColor(darkGreen);
-  }
-
-  if (hostButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-    hostButton.setFillColor(lightGray);
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-      goToHostScreen = true;
-      currentSelected = none;
-    }
-  } else {
-    hostButton.setFillColor(darkGray);
-  }
-
-  if (startServerHostButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-    startServerHostButton.setFillColor(lightGray);
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-      //goToHostScreen = true;
-      currentSelected = none;
-    }
-  } else {
-    startServerHostButton.setFillColor(darkGray);
-  }
-
-  if (goBackButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-    goBackButton.setFillColor(lightGreen);
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-      goBackToMain = true;
-      currentSelected = none;
-    }
-  } else {
-    goBackButton.setFillColor(darkGreen);
   }
 
 }

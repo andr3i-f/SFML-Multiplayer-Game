@@ -22,19 +22,18 @@ public:
   Server();
 
   void run();
+  bool initiate();
 
   void receiveData();
   void sendData(std::string &, sf::Packet &);
   void sendInitialData(Connection &);
   void sendDataToEveryone(sf::Packet &);
 
-  sf::IpAddress getIP() {
-    return serverIp;
-  }
+  sf::IpAddress getIP();
+  unsigned short serverPort;
 
 private:
   sf::IpAddress serverIp;
-  unsigned short serverPort;
   sf::UdpSocket serverSocket;
 
   std::unordered_map<std::string, Connection> connections;

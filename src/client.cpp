@@ -137,6 +137,10 @@ void Client::run() {
       world->update(dt.asSeconds());
     }
 
+    if (world->state == GameState::HOSTING) {
+      world->update(dt.asSeconds());
+    }
+
     if (((world->state == GameState::WON || world->state == GameState::LOST || !world->window.isOpen()) && connected)) {
       disconnect();
     }

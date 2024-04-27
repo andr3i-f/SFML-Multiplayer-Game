@@ -6,9 +6,7 @@ Server::Server() {
 }
 
 void Server::run() {
-  while (true) {
-    receiveData();
-  }
+  receiveData();
 }
 
 void Server::receiveData() {
@@ -184,4 +182,17 @@ void Server::sendInitialData(Connection & c) {
     }
     p.clear();
   }
+}
+
+sf::IpAddress Server::getIP() {
+  return serverIp;
+}
+
+bool Server::initiate() {
+ if (serverSocket.bind(serverPort) != sf::Socket::Done) {
+   std::cout << "Could not bind server socket to given port: " << serverPort << '\n';
+   return false;
+ }
+ serverSocket.setBlocking(false);
+ return true;
 }
