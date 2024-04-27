@@ -77,6 +77,12 @@ World::World(Player *& p) {
   joinButtonText.setPosition(uiw.joinButton.getPosition().x + 22, uiw.joinButton.getPosition().y + 12);
   joinButtonText.setString("JOIN");
 
+  hostButtonText.setFont(font);
+  hostButtonText.setStyle(sf::Text::Bold);
+  hostButtonText.setCharacterSize(20);
+  hostButtonText.setPosition(uiw.hostButton.getPosition().x + 22, uiw.hostButton.getPosition().y + 12);
+  hostButtonText.setString("HOST");
+
   gameWonText.setFont(font);
   gameWonText.setStyle(sf::Text::Bold);
   gameWonText.setCharacterSize(50);
@@ -92,8 +98,26 @@ World::World(Player *& p) {
   clickToContinueText.setFont(font);
   clickToContinueText.setStyle(sf::Text::Bold);
   clickToContinueText.setCharacterSize(20);
-  clickToContinueText.setPosition(sf::Vector2f{450, 400});
+  clickToContinueText.setPosition(sf::Vector2f{445, 400});
   clickToContinueText.setString("Click to continue to main menu");
+
+  startServerHostText.setFont(font);
+  startServerHostText.setStyle(sf::Text::Bold);
+  startServerHostText.setCharacterSize(20);
+  startServerHostText.setString("START SERVER");
+  startServerHostText.setPosition(uiw.startServerHostButton.getPosition().x + 22, uiw.startServerHostButton.getPosition().y + 12);
+
+  goBackText.setFont(font);
+  goBackText.setStyle(sf::Text::Bold);
+  goBackText.setCharacterSize(20);
+  goBackText.setString("BACK");
+  goBackText.setPosition(uiw.goBackButton.getPosition().x + 22, uiw.goBackButton.getPosition().y + 12);
+
+  serverIPText.setFont(font);
+  serverIPText.setStyle(sf::Text::Bold);
+  serverIPText.setCharacterSize(40);
+  serverIPText.setString("Server IP: " + server.getIP().toString());
+  serverIPText.setPosition(sf::Vector2f{350, 315});
 
   creditsText.setFont(font);
   creditsText.setStyle(sf::Text::Italic);
@@ -120,7 +144,10 @@ World::~World() {
 void World::update(float dt) {
   switch (state) {
     case GameState::MAIN_MENU:
-
+      if (uiw.goToHostScreen) {
+        uiw.goToHostScreen = false;
+        state = HOST;
+      }
       break;
     case GameState::PLAYING:
       // update objects here
@@ -160,6 +187,11 @@ void World::update(float dt) {
         //clearInput();
       }
       break;
+    case GameState::HOST:
+      if (uiw.goBackToMain) {
+        uiw.goBackToMain = false;
+        state = MAIN_MENU;
+      }
     default:
       break;
   }
@@ -193,6 +225,7 @@ void World::render() {
       window.draw(serverIPDisplay);
       window.draw(joinButtonText);
       window.draw(creditsText);
+      window.draw(hostButtonText);
 
       break;
     case GameState::PLAYING:
@@ -227,6 +260,19 @@ void World::render() {
     case GameState::WON:
       window.draw(gameWonText);
       window.draw(clickToContinueText);
+      break;
+    case GameState::HOST:
+      uiw.update(window);
+      window.draw(uiw.startServerHostButton);
+      window.draw(uiw.serverPortBox);
+      window.draw(uiw.goBackButton);
+
+      window.draw(creditsText);
+      window.draw(startServerHostText);
+      window.draw(serverIPText);
+      window.draw(serverPort);
+      window.draw(goBackText);
+      window.draw(serverPortDisplay);
       break;
     default:
       break;
@@ -321,6 +367,18 @@ World::UserInputWindow::UserInputWindow() {
   joinButton.setSize(sf::Vector2f {100, 50});
   joinButton.setPosition(550, 500);
   joinButton.setFillColor(sf::Color::Green);
+
+  hostButton.setSize(sf::Vector2f {100, 50});
+  hostButton.setPosition(550, 575);
+  hostButton.setFillColor(darkGray);
+
+  startServerHostButton.setSize(sf::Vector2f {200, 50});
+  startServerHostButton.setPosition(500, 575);
+  startServerHostButton.setFillColor(darkGray);
+
+  goBackButton.setSize(sf::Vector2f {100, 50});
+  goBackButton.setPosition(100, 100);
+  goBackButton.setFillColor(darkGreen);
 }
 
 void World::UserInputWindow::draw(sf::RenderWindow & w) {
@@ -328,6 +386,7 @@ void World::UserInputWindow::draw(sf::RenderWindow & w) {
   w.draw(serverIPBox);
   w.draw(serverPortBox);
   w.draw(joinButton);
+  w.draw(hostButton);
 }
 
 void World::UserInputWindow::update(sf::RenderWindow & w) {
@@ -388,6 +447,37 @@ void World::UserInputWindow::update(sf::RenderWindow & w) {
   } else {
     joinButton.setFillColor(darkGreen);
   }
+
+  if (hostButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+    hostButton.setFillColor(lightGray);
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      goToHostScreen = true;
+      currentSelected = none;
+    }
+  } else {
+    hostButton.setFillColor(darkGray);
+  }
+
+  if (startServerHostButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+    startServerHostButton.setFillColor(lightGray);
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      //goToHostScreen = true;
+      currentSelected = none;
+    }
+  } else {
+    startServerHostButton.setFillColor(darkGray);
+  }
+
+  if (goBackButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+    goBackButton.setFillColor(lightGreen);
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      goBackToMain = true;
+      currentSelected = none;
+    }
+  } else {
+    goBackButton.setFillColor(darkGreen);
+  }
+
 }
 
 void World::clearWorld() {

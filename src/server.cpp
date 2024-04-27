@@ -3,17 +3,6 @@
 Server::Server() {
   serverSocket.setBlocking(false);
   serverIp = sf::IpAddress::getLocalAddress();
-
-  std::cout << "--------------------------------\n";
-  std::cout << serverIp << '\n';
-  std::cout << "--------------------------------\n";
-
-  std::cout << "Enter a port for server to bind to: ";
-  std::cin >> serverPort;
-
-  if (serverSocket.bind(serverPort) != sf::Socket::Done) {
-    std::cout << "Error - server not able to bind to port." << std::endl;
-  }
 }
 
 void Server::run() {

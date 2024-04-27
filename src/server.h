@@ -28,6 +28,10 @@ public:
   void sendInitialData(Connection &);
   void sendDataToEveryone(sf::Packet &);
 
+  sf::IpAddress getIP() {
+    return serverIp;
+  }
+
 private:
   sf::IpAddress serverIp;
   unsigned short serverPort;

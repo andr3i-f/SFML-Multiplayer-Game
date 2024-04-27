@@ -6,12 +6,14 @@
 #include <sstream>
 
 #include "player.h"
+#include "../server.h"
 
 enum GameState {
   MAIN_MENU = 0,
   PLAYING,
   WON,
-  LOST
+  LOST,
+  HOST
 };
 
 class World {
@@ -45,6 +47,9 @@ public:
     sf::RectangleShape serverPortBox;
 
     sf::RectangleShape joinButton;
+    sf::RectangleShape hostButton;
+    sf::RectangleShape startServerHostButton;
+    sf::RectangleShape goBackButton;
 
     sf::Color lightGray{200, 200, 200};
     sf::Color gray{152, 156, 155};
@@ -53,6 +58,8 @@ public:
     sf::Color lightGreen{109, 204, 90};
 
     bool attemptJoin{false};
+    bool goToHostScreen{false};
+    bool goBackToMain{false};
 
 
   public:
@@ -81,6 +88,10 @@ public:
   sf::Text serverIPDisplay;
   sf::Text serverPortDisplay;
   sf::Text joinButtonText;
+  sf::Text hostButtonText;
+  sf::Text startServerHostText;
+  sf::Text goBackText;
+  sf::Text serverIPText;
   std::string userPortInput{};
   std::string serverIPInput{};
   std::string serverPortInput{};
@@ -99,6 +110,8 @@ public:
   std::stringstream ss;
 
   GameState state;
+
+  Server server{};
 
   bool bothPlayersConnected{false};
 };
