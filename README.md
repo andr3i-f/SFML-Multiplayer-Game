@@ -24,13 +24,16 @@ Space - shoots projectile (if it's the player's turn)
 ![Main Menu Image](assets/images/main_menu_image.png)
 Image of the main menu UI, which is what the client sees when opening the game.
 
+![Host Menu Image](assets/images/host_menu_image.png)
+Image of the host menu UI.
+
 ![Both Players Connected](assets/images/both_clients_connected.png)
 Image of both players connected at once, the left being Player 1, and the right being Player 2.
 
 ![Player Shooting](assets/images/player_shooting.png)
 Image of Player 1 shooting.
 
-# [Demo Video](https://youtu.be/AL8oMHDAfvk)
+# [Demo Video](https://youtu.be/jNFzGbbPUjg)
 
 # How to Build & Run
 
